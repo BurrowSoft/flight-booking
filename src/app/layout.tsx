@@ -131,6 +131,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                   <li><span className="text-slate-400">Baggage policy</span></li>
                   <li><span className="text-slate-400">Cancellations</span></li>
                   <li><span className="text-slate-400">Travel insurance</span></li>
+                  <li><a href="mailto:support@flymole.com" className="hover:text-sky-600 transition-colors">support@flymole.com</a></li>
                 </ul>
               </div>
               <div>

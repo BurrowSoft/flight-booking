@@ -1,5 +1,15 @@
 import type { NewsProvider } from "./types";
-import type { NewsSearchParams, NewsArticle } from "../../types";
+import type { NewsSearchParams, NewsArticle, NewsCategory } from "../../types";
+
+const NEWSAPI_CATEGORY: Record<NewsCategory, string> = {
+  general: "general",
+  business: "business",
+  technology: "technology",
+  sports: "sports",
+  entertainment: "entertainment",
+  health: "health",
+  science: "science",
+};
 
 interface NewsApiArticle {
   title: string;
@@ -30,6 +40,7 @@ export class NewsAPIProvider implements NewsProvider {
     url.searchParams.set("language", language);
     url.searchParams.set("pageSize", String(pageSize));
     if (params.query) url.searchParams.set("q", params.query);
+    if (params.category) url.searchParams.set("category", NEWSAPI_CATEGORY[params.category]);
     url.searchParams.set("apiKey", this.apiKey);
 
     const res = await fetch(url.toString(), { next: { revalidate: 900 } });

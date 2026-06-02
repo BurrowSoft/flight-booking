@@ -35,11 +35,19 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: `${SITE_NAME} — Cheap Flights, Compare & Book`,
     description: SITE_DESCRIPTION,
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "FlyMole" }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} — Cheap Flights, Compare & Book`,
     description: SITE_DESCRIPTION,
+    images: ["/og-image.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
   robots: {
     index: true,
@@ -136,14 +144,69 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 </ul>
               </div>
               <div>
-                <p className="text-sm font-bold text-sky-600">{SITE_NAME}</p>
-                <p className="mt-1 text-xs text-slate-400">
-                  Compare hundreds of airlines in seconds. No hidden fees.
-                </p>
+                {/* BurrowSoft branding */}
+                <a
+                  href="https://burrowsoft.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mb-3 flex items-center gap-2 group w-fit"
+                  aria-label="BurrowSoft"
+                >
+                  {/* Inline mole SVG wordmark */}
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 200 200"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="shrink-0"
+                    aria-hidden
+                  >
+                    <ellipse cx="100" cy="115" rx="60" ry="55" fill="#1e293b" />
+                    <ellipse cx="100" cy="100" rx="45" ry="45" fill="#334155" />
+                    <ellipse cx="83" cy="95" rx="8" ry="10" fill="white" />
+                    <ellipse cx="117" cy="95" rx="8" ry="10" fill="white" />
+                    <circle cx="83" cy="96" r="4" fill="#0f172a" />
+                    <circle cx="117" cy="96" r="4" fill="#0f172a" />
+                    <rect x="50" y="150" width="100" height="20" rx="4" fill="#1e293b" />
+                  </svg>
+                  <span className="text-xs font-semibold text-slate-600 group-hover:text-sky-600 transition-colors">
+                    BurrowSoft
+                  </span>
+                </a>
+
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Other Products</h3>
+                <ul className="space-y-1.5 text-sm text-slate-600">
+                  <li>
+                    <a href="https://bookingmole.com" target="_blank" rel="noopener noreferrer" className="hover:text-sky-600 transition-colors">
+                      BookingMole — Hotels
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://insightmole.com" target="_blank" rel="noopener noreferrer" className="hover:text-sky-600 transition-colors">
+                      InsightMole — News
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://rentacarmole.com" target="_blank" rel="noopener noreferrer" className="hover:text-sky-600 transition-colors">
+                      RentACarMole — Cars
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://gamesmole.com" target="_blank" rel="noopener noreferrer" className="hover:text-sky-600 transition-colors">
+                      GamesMole — Games
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://shoppingmole.com" target="_blank" rel="noopener noreferrer" className="hover:text-sky-600 transition-colors">
+                      ShoppingMole — Deals
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
             <p className="mt-8 border-t border-slate-100 pt-6 text-center text-xs text-slate-400">
-              © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
+              © {new Date().getFullYear()} BurrowSoft. All rights reserved.
             </p>
           </div>
         </footer>

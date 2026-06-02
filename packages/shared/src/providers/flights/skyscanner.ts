@@ -71,34 +71,60 @@ export class SkyscannerFlightProvider implements FlightProvider {
       const i = it as Record<string, unknown>;
       const legs = (i.legs as unknown[]) ?? [];
       const firstLeg = (legs[0] ?? {}) as Record<string, unknown>;
+
+      // Carrier info
       const carriers = (firstLeg.carriers as Record<string, unknown>) ?? {};
       const marketing = ((carriers.marketing as unknown[]) ?? [])[0] as Record<string, unknown> | undefined;
+      const airlineName = String(marketing?.name ?? "");
+      const airlineLogo = marketing?.logoUrl ? String(marketing.logoUrl) : undefined;
+
+      // Pricing
       const pricingOptions = (i.pricingOptions as unknown[]) ?? [];
-      const firstPrice = (pricingOptions[0] as Record<string, unknown> | undefined);
-      const priceAmount = Number((firstPrice?.price as Record<string, unknown>)?.amount ?? 0);
+      const firstPricing = (pricingOptions[0] as Record<string, unknown> | undefined);
+      const priceAmount = Number((firstPricing?.price as Record<string, unknown>)?.amount ?? 0);
+      const deepLink = String(firstPricing?.deepLink ?? "https://www.skyscanner.com");
+
+      // Segments for flight number and stop cities
+      const segments = (firstLeg.segments as unknown[]) ?? [];
+      const firstSeg = (segments[0] ?? {}) as Record<string, unknown>;
+      const segOperating = (firstSeg.operatingCarrier as Record<string, unknown> | undefined);
+      const carrierCode = String(marketing?.alternateId ?? segOperating?.alternateId ?? "");
+      const flightNo = segments.length > 0
+        ? `${carrierCode}${String(firstSeg.flightNumber ?? "")}`
+        : "";
+
+      // Stop cities from intermediate segment destinations
+      const stopCodes: string[] = segments.slice(0, -1).map((s) => {
+        const seg = s as Record<string, unknown>;
+        return String((seg.destination as Record<string, unknown>)?.displayCode ?? "");
+      }).filter(Boolean);
+
+      const originCode = String(firstLeg.origin ?? params.origin);
+      const destCode = String(firstLeg.destination ?? params.destination);
 
       return {
         id: String(i.id ?? Math.random()),
         origin: {
-          code: String(firstLeg.origin ?? params.origin),
-          name: String(firstLeg.origin ?? ""),
+          code: originCode,
+          name: originCode,
           city: origin.cityName ?? params.origin,
           country: origin.countryName ?? "",
         },
         destination: {
-          code: String(firstLeg.destination ?? params.destination),
-          name: String(firstLeg.destination ?? ""),
+          code: destCode,
+          name: destCode,
           city: destination.cityName ?? params.destination,
           country: destination.countryName ?? "",
         },
         departureTime: String(firstLeg.departure ?? ""),
         arrivalTime: String(firstLeg.arrival ?? ""),
-        airline: String(marketing?.name ?? ""),
-        flightNumber: "",
+        airline: airlineName,
+        airlineLogo,
+        flightNumber: flightNo,
         price: price(priceAmount, currency),
         durationMinutes: Number(firstLeg.durationInMinutes ?? 0),
-        stops: Number(firstLeg.stopCount ?? 0),
-        bookingUrl: String(firstPrice?.deepLink ?? "https://www.skyscanner.com"),
+        stops: Number(firstLeg.stopCount ?? stopCodes.length),
+        bookingUrl: deepLink,
         provider: this.name,
       } satisfies Flight;
     });
@@ -129,6 +155,7 @@ export class SkyscannerFlightProvider implements FlightProvider {
       entityId: String(place.entityId ?? place.id ?? ""),
       skyId: String(place.skyId ?? ""),
       name: String(place.name ?? ""),
+      iataCode: place.iataCode ? String(place.iataCode) : undefined,
       cityName: String(place.cityName ?? place.name ?? ""),
       countryName: String(place.countryName ?? ""),
     };

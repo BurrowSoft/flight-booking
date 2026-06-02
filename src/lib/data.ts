@@ -132,6 +132,8 @@ export function generateFlights(
       seatsLeft: Math.max(1, Math.floor(seededRandom(seed + 6) * 9)),
       cabinClass,
       amenities,
+      bookingUrl: `https://www.google.com/travel/flights`,
+      provider: "FlyMole",
     };
   });
 }

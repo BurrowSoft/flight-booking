@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/VICTUS/Desktop/burrowsoft-web-apps/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\VICTUS\\Desktop\\burrowsoft-web-apps",
+      "c:\\Users\\VICTUS\\.claude\\projects\\c--Users-VICTUS-Desktop-burrowsoft-web-apps-flight-booking\\memory"
+    ]
+  }
+}

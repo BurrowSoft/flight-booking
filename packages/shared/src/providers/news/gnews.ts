@@ -1,5 +1,15 @@
 import type { NewsProvider } from "./types";
-import type { NewsSearchParams, NewsArticle } from "../../types";
+import type { NewsSearchParams, NewsArticle, NewsCategory } from "../../types";
+
+const GNEWS_TOPIC: Record<NewsCategory, string | null> = {
+  general: null,
+  business: "business",
+  technology: "technology",
+  sports: "sports",
+  entertainment: "entertainment",
+  health: "health",
+  science: "science",
+};
 
 interface GNewsArticle {
   title: string;
@@ -32,6 +42,8 @@ export class GNewsProvider implements NewsProvider {
     url.searchParams.set("max", String(max));
     url.searchParams.set("apikey", this.apiKey);
     if (params.query) url.searchParams.set("q", params.query);
+    const topic = params.category ? GNEWS_TOPIC[params.category] : null;
+    if (topic) url.searchParams.set("topic", topic);
 
     const res = await fetch(url.toString(), { next: { revalidate: 900 } });
     if (!res.ok) return [];

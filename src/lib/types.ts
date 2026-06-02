@@ -29,6 +29,8 @@ export interface Flight {
   seatsLeft: number;
   cabinClass: CabinClass;
   amenities: string[];
+  bookingUrl: string;
+  provider: string;
 }
 
 export type CabinClass = "economy" | "premium_economy" | "business" | "first";

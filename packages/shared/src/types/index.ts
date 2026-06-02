@@ -105,11 +105,21 @@ export interface RentalCar {
 
 // ─── News ────────────────────────────────────────────────────────────────────
 
+export type NewsCategory =
+  | "general"
+  | "business"
+  | "technology"
+  | "sports"
+  | "entertainment"
+  | "health"
+  | "science";
+
 export interface NewsSearchParams {
   query?: string;
   country?: string;
   language?: string;
   pageSize?: number;
+  category?: NewsCategory;
 }
 
 export interface NewsArticle {

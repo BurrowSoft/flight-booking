@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Suspense } from "react";
 import Link from "next/link";
 import { FlightSearchForm } from "@/components/FlightSearchForm";
-import { SearchResults } from "@/components/SearchResults";
+import { FlightResults } from "@/components/FlightResults";
 import { AIRPORTS } from "@/lib/data";
 import { buildSearchMetadata } from "@/lib/seo";
-import { searchFlights } from "@/lib/search";
 import type { CabinClass } from "@/lib/types";
-import { detectCountry, getCurrencyForCountry } from "@burrowsoft/shared";
+import { detectCountry, getCurrencyForCountry, createFlightRouter } from "@burrowsoft/shared";
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -47,15 +45,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const origin = AIRPORTS[originCode];
   const destination = AIRPORTS[destinationCode];
 
-  const flights = await searchFlights(
-    originCode,
-    destinationCode,
-    date,
-    adults,
-    cabin,
-    country,
-    currency
-  );
+  // Resolve active provider names server-side so the client overlay knows what to show
+  const router = createFlightRouter();
+  const providerNames = router.getProvidersForCountry(country).map((p: { name: string }) => p.name);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -80,32 +72,22 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <span className="ml-2 text-base font-normal text-slate-500">on {date}</span>
           )}
         </h1>
-        {flights.length > 0 && (
-          <p className="text-sm text-slate-500">{flights.length} result{flights.length !== 1 ? "s" : ""}</p>
-        )}
       </div>
 
-      <Suspense fallback={<div className="py-10 text-center text-slate-400">Loading flights…</div>}>
-        {flights.length > 0 ? (
-          <SearchResults
-            flights={flights}
-            originCity={origin?.city ?? originCode}
-            destinationCity={destination?.city ?? destinationCode}
-            date={date}
-          />
-        ) : (
-          <div className="rounded-xl border border-dashed border-slate-200 py-20 text-center">
-            <p className="text-lg font-medium text-slate-400">No flights found for this route</p>
-            <p className="mt-2 text-sm text-slate-400">Try different airports or dates</p>
-            <Link
-              href="/"
-              className="mt-6 inline-block rounded-lg bg-sky-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-sky-700 transition-colors"
-            >
-              Search again
-            </Link>
-          </div>
-        )}
-      </Suspense>
+      <FlightResults
+        query={{
+          from: originCode,
+          to: destinationCode,
+          date,
+          adults,
+          cabin,
+          currency,
+          country,
+        }}
+        providerNames={providerNames}
+        originCity={origin?.city ?? originCode}
+        destinationCity={destination?.city ?? destinationCode}
+      />
     </div>
   );
 }

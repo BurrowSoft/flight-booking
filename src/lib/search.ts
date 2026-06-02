@@ -58,6 +58,8 @@ function mapSharedFlight(f: SharedFlight, cabin: CabinClass): Flight {
     seatsLeft: 9,
     cabinClass: cabin,
     amenities: defaultAmenities(cabin),
+    bookingUrl: f.bookingUrl,
+    provider: f.provider,
   };
 }
 
@@ -85,7 +87,7 @@ export async function searchFlights(
       },
       country
     );
-    return results.map((f) => mapSharedFlight(f, cabin));
+    return results.map((f: SharedFlight) => mapSharedFlight(f, cabin));
   } catch {
     return [];
   }

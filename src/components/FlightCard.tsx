@@ -23,12 +23,28 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
     >
       {/* Airline */}
       <div className="flex min-w-[140px] items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-50 text-sky-600 text-xl">
-          {flight.airline.logo}
+        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-sky-50 text-sky-600 text-xl">
+          {flight.airline.logo.startsWith("http") ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={flight.airline.logo}
+              alt={flight.airline.name}
+              className="h-8 w-8 object-contain"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = "none";
+              }}
+            />
+          ) : (
+            flight.airline.logo
+          )}
         </div>
         <div>
           <p className="text-sm font-semibold text-slate-900">{flight.airline.name}</p>
           <p className="text-xs text-slate-400">{flight.flightNumber}</p>
+          {/* Provider badge */}
+          <span className="mt-0.5 inline-block rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+            {flight.provider}
+          </span>
         </div>
       </div>
 
@@ -77,7 +93,7 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
         ))}
       </div>
 
-      {/* Price + CTA */}
+      {/* Price + CTAs */}
       <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
         <div className="text-right">
           {hasDiscount && (
@@ -96,12 +112,25 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
             <p className="text-xs font-medium text-red-500">{flight.seatsLeft} seats left!</p>
           )}
         </div>
-        <button
-          onClick={() => onSelect?.(flight)}
-          className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700 active:bg-sky-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1 whitespace-nowrap"
-        >
-          Select
-        </button>
+
+        <div className="flex flex-col gap-2 sm:items-end">
+          {/* Primary: direct deep-link to the provider that found this deal */}
+          <a
+            href={flight.bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700 active:bg-sky-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1 whitespace-nowrap"
+          >
+            Book on {flight.provider} ↗
+          </a>
+          {/* Secondary: open modal with all affiliate options */}
+          <button
+            onClick={() => onSelect?.(flight)}
+            className="rounded-lg border border-slate-200 px-4 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300 whitespace-nowrap"
+          >
+            Compare options
+          </button>
+        </div>
       </div>
     </article>
   );

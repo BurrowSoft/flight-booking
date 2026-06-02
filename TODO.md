@@ -1,5 +1,12 @@
 # FlyMole — API Integration TODO
 
+IMPORTANT: PLEASE KEEP UPDATING YOUR SECTION IN ../Reports.md with
+- status
+- pending decisions
+- pending actions
+- concerns
+- suggestions
+
 ## Permissions
 Before starting work, ask the user to enable bypass permissions so you don't get approval prompts on every file operation. They can do this by opening Claude Code settings and setting permission mode to "bypass", or by launching with `claude --dangerously-skip-permissions`.
 

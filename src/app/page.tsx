@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { FlightSearchForm } from "@/components/FlightSearchForm";
 import { Price } from "@/components/Price";
 import { AdUnit } from "@/components/AdUnit";
@@ -42,7 +43,8 @@ const features = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations("hero");
   const featuredRoutes = POPULAR_ROUTES.slice(0, 8);
 
   return (
@@ -58,11 +60,10 @@ export default function HomePage() {
             id="hero-heading"
             className="mb-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl"
           >
-            Find Cheap Flights <br />
-            <span className="text-sky-200">From Hundreds of Airlines</span>
+            {t("title")}
           </h1>
           <p className="mb-10 text-lg text-sky-100 sm:text-xl">
-            Compare prices across 500+ airlines. No hidden fees. Book in seconds.
+            {t("subtitle")}
           </p>
           <FlightSearchForm />
         </div>

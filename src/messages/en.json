@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "home": "FlyMole",
+    "popularRoutes": "Popular Routes",
+    "deals": "Deals"
+  },
+  "hero": {
+    "title": "Compare Flights. No Tricks.",
+    "subtitle": "Find the cheapest flights from top airlines and booking sites."
+  },
+  "search": {
+    "from": "From",
+    "to": "To",
+    "departure": "Departure",
+    "return": "Return (optional)",
+    "passengers": "Passengers",
+    "search": "Search Flights",
+    "oneWay": "One way",
+    "roundTrip": "Round trip"
+  },
+  "results": {
+    "found": "{count, plural, one {# flight found} other {# flights found}}",
+    "noneFound": "No flights found for this route",
+    "noneFoundHint": "Try different airports or dates",
+    "pricesAsOf": "Prices as of {time}",
+    "refresh": "refresh",
+    "providers": "Found on {n} providers",
+    "bookOn": "Book on {provider}",
+    "alsoOn": "Also on {provider}",
+    "compareOptions": "Compare options",
+    "stops": "{n, plural, one {# stop} other {# stops}}",
+    "direct": "Direct",
+    "loading": "Loading flights from {provider}…",
+    "unavailable": "{provider} unavailable",
+    "findingFlights": "Finding the best flights…",
+    "fetchingPrices": "Fetching up-to-date prices…"
+  },
+  "footer": {
+    "tagline": "Compare hundreds of airlines in seconds. No hidden fees.",
+    "copyright": "© {year} BurrowSoft. All rights reserved."
+  }
+}

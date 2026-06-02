@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { Flight } from "@/lib/types";
 import { formatDuration } from "@/lib/data";
 import { useFormatPrice } from "./CurrencyProvider";
@@ -11,6 +12,7 @@ interface FlightCardProps {
 
 export function FlightCard({ flight, onSelect }: FlightCardProps) {
   const fmt = useFormatPrice();
+  const t = useTranslations("results");
   const hasDiscount = flight.originalPrice && flight.originalPrice > flight.price;
   const discountPct = hasDiscount
     ? Math.round((1 - flight.price / flight.originalPrice!) * 100)
@@ -48,7 +50,7 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
           {/* Provider badge — shows "N providers" when deduplicated, otherwise single provider */}
           {multiProvider ? (
             <span className="mt-0.5 inline-block rounded-full bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700">
-              Found on {offers.length} providers
+              {t("providers", { n: offers.length })}
             </span>
           ) : (
             <span className="mt-0.5 inline-block rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
@@ -73,11 +75,11 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center">
               {flight.stops === 0 ? (
                 <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">
-                  Direct
+                  {t("direct")}
                 </span>
               ) : (
                 <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
-                  {flight.stops} stop
+                  {t("stops", { n: flight.stops })}
                 </span>
               )}
             </div>
@@ -137,7 +139,7 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
                   : "rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 active:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300 whitespace-nowrap"
               }
             >
-              {i === 0 ? "Book" : "Also"} on {offer.provider}
+              {i === 0 ? t("bookOn", { provider: offer.provider }) : t("alsoOn", { provider: offer.provider })}
               {multiProvider && i > 0 && (
                 <span className="ml-1 text-slate-400">{fmt(offer.price)}</span>
               )}
@@ -150,7 +152,7 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
             onClick={() => onSelect?.(flight)}
             className="rounded-lg border border-slate-200 px-4 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300 whitespace-nowrap"
           >
-            Compare options
+            {t("compareOptions")}
           </button>
         </div>
       </div>

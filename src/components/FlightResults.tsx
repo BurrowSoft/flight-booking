@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import type { Flight, FlightProviderOffer } from "@/lib/types";
 import { FlightLoadingOverlay, type ProviderStatus } from "./FlightLoadingOverlay";
 import { SearchResults } from "./SearchResults";
@@ -65,6 +66,7 @@ function deduplicateFlights(flights: Flight[]): Flight[] {
 }
 
 export function FlightResults({ query, providerNames, originCity, destinationCity }: Props) {
+  const t = useTranslations("results");
   const [flights, setFlights] = useState<Flight[]>([]);
   const [providerStatuses, setProviderStatuses] = useState<ProviderStatus[]>([]);
   const [overlayVisible, setOverlayVisible] = useState(false);
@@ -90,7 +92,7 @@ export function FlightResults({ query, providerNames, originCity, destinationCit
 
       setProviderStatuses(providers.map((name) => ({ name, status: "loading" })));
       setOverlayVisible(true);
-      if (isRefresh) setOverlayMessage("Fetching up-to-date prices…");
+      if (isRefresh) setOverlayMessage(t("fetchingPrices"));
       else setOverlayMessage(undefined);
 
       if (!isRefresh) setFlights([]);
@@ -147,7 +149,7 @@ export function FlightResults({ query, providerNames, originCity, destinationCit
         const hhmm = prev
           ? prev.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
           : "";
-        showToast(`Prices could not be refreshed — last updated at ${hhmm}`);
+        showToast(t("pricesAsOf", { time: hhmm }));
       }
     },
     [query, providerNames, showToast]
@@ -194,12 +196,12 @@ export function FlightResults({ query, providerNames, originCity, destinationCit
       {/* Prices timestamp */}
       {lastUpdated && allSettled && !overlayVisible && (
         <p className="mb-4 text-xs text-slate-400">
-          Prices as of {hhmm} —{" "}
+          {t("pricesAsOf", { time: hhmm })} —{" "}
           <button
             onClick={() => fetchFlights(true)}
             className="underline hover:text-sky-600 transition-colors"
           >
-            refresh
+            {t("refresh")}
           </button>
         </p>
       )}
@@ -214,8 +216,8 @@ export function FlightResults({ query, providerNames, originCity, destinationCit
         />
       ) : allSettled ? (
         <div className="rounded-xl border border-dashed border-slate-200 py-20 text-center">
-          <p className="text-lg font-medium text-slate-400">No flights found for this route</p>
-          <p className="mt-2 text-sm text-slate-400">Try different airports or dates</p>
+          <p className="text-lg font-medium text-slate-400">{t("noneFound")}</p>
+          <p className="mt-2 text-sm text-slate-400">{t("noneFoundHint")}</p>
         </div>
       ) : null}
 

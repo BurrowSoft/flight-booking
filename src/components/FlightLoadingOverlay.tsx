@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export interface ProviderStatus {
   name: string;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function FlightLoadingOverlay({ providers, message, onDismissed }: Props) {
+  const t = useTranslations("results");
   const [opacity, setOpacity] = useState(1);
   const [mounted, setMounted] = useState(true);
 
@@ -54,7 +56,7 @@ export function FlightLoadingOverlay({ providers, message, onDismissed }: Props)
             </span>
           </div>
           <p className="text-lg font-semibold text-slate-900">
-            {message ?? "Finding the best flights…"}
+            {message ?? t("findingFlights")}
           </p>
         </div>
 
@@ -85,9 +87,9 @@ export function FlightLoadingOverlay({ providers, message, onDismissed }: Props)
                     : "text-slate-300"
                 }`}
               >
-                {p.status === "loading" && `Loading flights from ${p.name}…`}
-                {p.status === "done" && `${p.name} — results loaded`}
-                {p.status === "error" && `${p.name} unavailable`}
+                {p.status === "loading" && t("loading", { provider: p.name })}
+                {p.status === "done" && `${p.name} ✓`}
+                {p.status === "error" && t("unavailable", { provider: p.name })}
               </span>
             </div>
           ))}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { FlightSearchForm } from "@/components/FlightSearchForm";
 import { FlightResults } from "@/components/FlightResults";
 import { AIRPORTS } from "@/lib/data";
@@ -48,6 +49,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   // Resolve active provider names server-side so the client overlay knows what to show
   const router = createFlightRouter();
   const providerNames = router.getProvidersForCountry(country).map((p: { name: string }) => p.name);
+  const t = await getTranslations("results");
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -67,9 +69,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-xl font-bold text-slate-900">
-          Flights from {origin?.city ?? originCode} to {destination?.city ?? destinationCode}
+          {origin?.city ?? originCode} → {destination?.city ?? destinationCode}
           {date && (
-            <span className="ml-2 text-base font-normal text-slate-500">on {date}</span>
+            <span className="ml-2 text-base font-normal text-slate-500">{date}</span>
           )}
         </h1>
       </div>

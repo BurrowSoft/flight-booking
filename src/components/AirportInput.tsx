@@ -3,9 +3,18 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { AIRPORTS } from "@/lib/data";
 
-const ALL_AIRPORTS = Object.values(AIRPORTS).sort((a, b) =>
-  a.city.localeCompare(b.city)
-);
+const ALL_AIRPORTS = Object.values(AIRPORTS)
+  // Drop entries where the name starts with "?" — corrupt data from the airports package
+  .filter((a) => !a.name.startsWith("?") && !a.city.startsWith("?"))
+  .sort((a, b) => a.city.localeCompare(b.city));
+
+// Curated popular airports shown when the query is empty
+const POPULAR_CODES = [
+  "JFK","LHR","CDG","DXB","SIN","HND","LAX","ORD","FRA","AMS",
+  "MAD","BCN","FCO","LIS","ZRH","GRU","SYD","BKK","ICN","MUC",
+  "YYZ","MEX","EZE","DEL","PEK","PVG","SVO","DFW","MIA","ATL",
+];
+const POPULAR_AIRPORTS = POPULAR_CODES.flatMap((c) => (AIRPORTS[c] ? [AIRPORTS[c]] : []));
 
 interface Props {
   id: string;
@@ -25,7 +34,7 @@ export function AirportInput({ id, label, value, onChange, exclude }: Props) {
   const selected = AIRPORTS[value];
 
   const filtered = query.length < 1
-    ? ALL_AIRPORTS.filter((a) => a.code !== exclude).slice(0, 8)
+    ? POPULAR_AIRPORTS.filter((a) => a.code !== exclude)
     : ALL_AIRPORTS.filter((a) => {
         if (a.code === exclude) return false;
         const q = query.toLowerCase();
@@ -105,7 +114,13 @@ export function AirportInput({ id, label, value, onChange, exclude }: Props) {
         <ul
           role="listbox"
           className="absolute z-50 mt-1 max-h-64 w-full overflow-auto rounded-xl border border-slate-200 bg-white shadow-xl"
+          aria-label={query.length < 1 ? "Popular airports" : "Search results"}
         >
+          {query.length < 1 && (
+            <li className="px-3 pt-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+              Popular airports
+            </li>
+          )}
           {filtered.map((airport, i) => (
             <li
               key={airport.code}

@@ -70,3 +70,46 @@ File: `packages/shared/src/providers/flights/index.ts`
 
 ### 5. Sync packages/shared to all other apps after changes
 After editing any shared flight provider file, copy `packages/shared/` to: hotel-booking, news-feed, rent-a-car, main-website, games, shopping.
+
+---
+
+## Brazil Region (country === "BR")
+
+### What the user needs to arrange
+
+| Service | Registration | Notes |
+|---|---|---|
+| **LATAM Airlines API** | https://developers.latam-pass.latam.com | Official developer portal. REST API with real-time routes, schedules, pricing. Contact LATAM sales for API access. |
+| **Travelpayouts** | https://www.travelpayouts.com/en/ | Same registration as Thailand. Already covers LATAM, Gol, Azul via affiliate search. Single account covers global routes. |
+| **Decolar.com affiliate** | Contact Decolar directly | No public API. Largest OTA in Brazil — deep-link affiliate redirects are the viable option. |
+
+No new env vars needed if Travelpayouts is already registered (same token covers Brazil routes).
+
+For LATAM direct integration: `LATAM_API_KEY` once partner access granted.
+
+### LATAMFlightProvider (implement when API access granted)
+File: `packages/shared/src/providers/flights/latam.ts`
+- Base URL: `https://portal.api.latampass.com` (verify in LATAM developer docs)
+- Returns real-time fares for LATAM, LATAM Peru, LATAM Colombia, LATAM Chile, LATAM Argentina routes
+- Normalize to `Flight` DTO
+- Gate on `country === "BR"` or `country === "CL"` / `"AR"` / `"CO"` / `"PE"`
+
+### Travelpayouts already covers Brazil
+`TravelpayoutsFlightProvider` from the Thailand section covers Brazilian routes too (Gol, Azul, LATAM all in Travelpayouts network). No separate provider needed — just ensure the provider is not gated to SEA-only:
+- Remove any SEA-only gate on Travelpayouts
+- Enable it globally or for all countries (it has worldwide coverage)
+
+### Decolar.com affiliate deep-link
+Add Decolar to the affiliate CTA list in the results page when `country === "BR"`:
+```ts
+{
+  name: "Decolar.com",
+  description: "Maior OTA da América Latina",
+  buildUrl: (params) => `https://www.decolar.com/shop/flights/results/roundTrip/${params.origin}/${params.destination}/${params.departureDate}/...`,
+  color: "bg-orange-500 hover:bg-orange-600"
+}
+```
+
+### Brazilian airport priority in search suggestions
+When locale is `pt-BR` / country is `BR`, show Brazilian airports first:
+- São Paulo Guarulhos (GRU), São Paulo Congonhas (CGH), Rio de Janeiro Galeão (GIG), Rio Santos Dumont (SDU), Brasília (BSB), Salvador (SSA), Recife (REC), Fortaleza (FOR), Belo Horizonte (CNF), Manaus (MAO), Porto Alegre (POA), Curitiba (CWB)

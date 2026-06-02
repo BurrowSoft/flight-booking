@@ -94,6 +94,10 @@ export interface RentalCar {
   category: string;
   model: string;
   seats: number;
+  doors?: number;
+  ac?: boolean;
+  largeLuggage?: number;
+  smallLuggage?: number;
   transmission: "automatic" | "manual";
   pricePerDay: Price;
   totalPrice: Price;
@@ -142,4 +146,43 @@ export interface AISummary {
   countryNote?: string;
 }
 
-export type SearchDomain = "flights" | "hotels" | "cars" | "news";
+// ─── Shopping ────────────────────────────────────────────────────────────────
+
+export interface ShoppingSearchParams {
+  query: string;
+  country: string;
+  currency: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sortBy?: "relevance" | "price_low" | "price_high" | "review_score";
+}
+
+export interface ProductOffer {
+  retailer: string;
+  price: Price;
+  originalPrice?: Price;
+  link: string;
+  delivery?: string;
+  condition?: string;
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  thumbnail: string;
+  images: string[];
+  rating?: number;
+  reviewCount?: number;
+  price: Price;
+  originalPrice?: Price;
+  offers: ProductOffer[];
+  description?: string;
+  category?: string;
+  highlights?: string[];
+  link: string;
+  source: string;
+  delivery?: string;
+  provider: string;
+}
+
+export type SearchDomain = "flights" | "hotels" | "cars" | "news" | "shopping";

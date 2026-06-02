@@ -82,5 +82,21 @@ Flight prices change fast. Requirements:
 - If the refresh fails, dismiss the overlay silently and show a small toast: "Prices could not be refreshed — last updated at HH:MM"
 - Always show a "Prices as of HH:MM" timestamp below the results header
 
-### 8. Sync shared to all apps after any provider changes
+### 8. Themed mascot — FlyMole
+Create `public/mascot.svg` — the base BurrowSoft Mole (glasses, peeking over ledge, black line-art style) with a tiny airplane added beneath the ledge it's peeking over. The airplane should be in the same stroke style as the mole. SVG must have `<g id="mole-base">` and `<g id="prop">` groups. ViewBox: `0 0 200 200`.
+
+### 9. App thumbnail / OG image
+- `public/og-image.png` — 1200×630px, FlyMole mascot centred on brand background colour, "FlyMole" wordmark below
+- `public/favicon.ico` — mole head only, 32×32 and 16×16
+- `public/apple-touch-icon.png` — 180×180px, mole head on brand background
+- Wire all into `src/app/layout.tsx` metadata (`icons`, `openGraph.images`)
+
+### 10. Footer — BurrowSoft branding
+Add to the existing footer:
+- Small BurrowSoft logo (mole + wordmark) linking to burrowsoft.com
+- Links to sibling products: BookingMole, InsightMole, RentACarMole, GamesMole, ShoppingMole
+- Copyright: "© 2025 BurrowSoft. All rights reserved."
+Logo assets are in `public/` — copy `burrowsoft-logo.svg` from the main-website repo.
+
+### 11. Sync shared to all apps after any provider changes
 After editing any file in `packages/shared/src/`, copy the entire `packages/shared/` folder to the same path in: hotel-booking, news-feed, rent-a-car, main-website, games, shopping.

@@ -1,5 +1,0 @@
-{
-  "extends": "@burrowsoft/tsconfig/nextjs.json",
-  "include": ["src"],
-  "exclude": ["node_modules"]
-}

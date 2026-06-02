@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from "@/lib/seo";
 import { getCurrencyForCountry } from "@/lib/currency";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
+import { detectCountry } from "@burrowsoft/shared";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -61,7 +62,7 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const hdrs = await headers();
-  const country = hdrs.get("x-vercel-ip-country") ?? "US";
+  const country = detectCountry(Object.fromEntries(hdrs.entries()));
   const currency = getCurrencyForCountry(country);
 
   return (

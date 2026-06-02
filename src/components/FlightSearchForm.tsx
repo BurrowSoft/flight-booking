@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { CabinClass, TripType } from "@/lib/types";
 import { AirportInput } from "./AirportInput";
 
@@ -39,6 +40,7 @@ const cabinLabels: Record<CabinClass, string> = {
 
 export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
+  const t = useTranslations("search");
   const [form, setForm] = useState<FormState>(initialState);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,7 +98,7 @@ export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
-            {type === "roundtrip" ? "Round Trip" : "One Way"}
+            {type === "roundtrip" ? t("roundTrip") : t("oneWay")}
           </button>
         ))}
       </div>
@@ -104,21 +106,21 @@ export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
       <div className={`grid gap-3 ${compact ? "grid-cols-2 md:grid-cols-4" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"}`}>
         <AirportInput
           id="origin"
-          label="From"
+          label={t("from")}
           value={form.origin}
           onChange={(code) => set("origin", code)}
           exclude={form.destination}
         />
         <AirportInput
           id="destination"
-          label="To"
+          label={t("to")}
           value={form.destination}
           onChange={(code) => set("destination", code)}
           exclude={form.origin}
         />
 
         <div>
-          <label className={labelCls} htmlFor="depart">Depart</label>
+          <label className={labelCls} htmlFor="depart">{t("departure")}</label>
           <input
             id="depart"
             type="date"
@@ -130,7 +132,7 @@ export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
         </div>
 
         <div>
-          <label className={labelCls} htmlFor="return">Return</label>
+          <label className={labelCls} htmlFor="return">{t("return")}</label>
           <input
             id="return"
             type="date"
@@ -173,7 +175,7 @@ export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
           type="submit"
           className="w-full rounded-xl bg-sky-600 px-6 py-3.5 text-base font-semibold text-white shadow-md hover:bg-sky-700 active:bg-sky-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
         >
-          Search Flights
+          {t("search")}
         </button>
       </div>
     </form>

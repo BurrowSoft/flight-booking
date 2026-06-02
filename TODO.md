@@ -8,11 +8,19 @@ Before starting work, ask the user to enable bypass permissions so you don't get
 - `SKYSCANNER_RAPIDAPI_KEY` — Skyscanner via RapidAPI
 - `OPENAI_API_KEY` — AI summaries
 
-## ⚠️ Urgent: Amadeus Decommission
-Amadeus self-service API is being shut down July 2026. The `AmadeusFlightProvider` in `packages/shared/src/providers/flights/` must be replaced. Recommended replacement: **Kiwi.com Tequila API** or **Travelpayouts Flight Data API**.
-
 ## ⚠️ Vercel Env Var Discrepancy
 Vercel has both `RAPIDAPI_KEY` (Production only) and `RAPID_API_KEY` (Production + Preview). The codebase uses `RAPIDAPI_KEY`. Confirm which is correct and remove the duplicate from Vercel.
+
+## Architecture: Client-Driven Fetching
+All search calls must go through a Next.js API route (`/api/flights`) rather than directly in server components. This enables the client to drive the loading overlay and show per-provider progress in real time.
+
+Pattern:
+1. User submits search → client calls `/api/flights?...`
+2. API route fans out to all providers concurrently via `ProviderRouter`
+3. Client shows the loading overlay while awaiting the response
+4. Results return as JSON; client renders them and dismisses the overlay
+
+Wrap every provider call inside the API route with `unstable_cache` from `next/cache` (TTL: 5 min / `revalidate: 300`). Cache key = all search params stringified. Repeated identical searches within 5 minutes return cached data without burning RapidAPI quota.
 
 ## Tasks
 
@@ -33,12 +41,16 @@ Tasks:
 - Return real prices, airline names, logos, stop counts, baggage info
 - Normalize to `Flight` DTO from `@burrowsoft/shared`
 
-### 3. Replace Amadeus with Kiwi Tequila
-File: create `packages/shared/src/providers/flights/kiwi.ts`
-Kiwi Tequila API base: `https://api.tequila.kiwi.com`
+### 3. Remove Amadeus, add Kiwi Tequila as replacement
+Amadeus self-service is decommissioned — delete these files entirely:
+- `packages/shared/src/providers/flights/amadeus.ts`
+- Remove its registration from `packages/shared/src/providers/flights/index.ts`
+
+Then create `packages/shared/src/providers/flights/kiwi.ts`:
+- Kiwi Tequila API base: `https://api.tequila.kiwi.com`
 - Requires new env var: `KIWI_API_KEY` — add to Vercel and `.env.example`
 - Implement `search()` returning normalized `Flight[]`
-- Register in `packages/shared/src/providers/flights/index.ts` replacing Amadeus
+- Register in `packages/shared/src/providers/flights/index.ts`
 
 ### 4. Price comparison UI
 File: `src/app/search/` or equivalent results page
@@ -61,5 +73,14 @@ Every flight result card must have a clearly labelled booking button that sends 
 - Buttons open in a new tab (`target="_blank" rel="noopener noreferrer"`)
 - Affiliate tracking params must be appended where applicable (Skyscanner affiliate ID, Travelpayouts marker, etc.)
 
-### 7. Sync shared to all apps after any provider changes
+### 7. Price staleness — auto-refresh after 5 minutes
+Flight prices change fast. Requirements:
+- Client tracks the timestamp when results were last loaded
+- After 5 minutes on the results page, silently re-call `/api/flights` with the same params
+- While refreshing, show the loading overlay with the message "Fetching up-to-date prices…" (same overlay component, reused)
+- When fresh results arrive, update the list in place — no hard refresh, no scroll reset
+- If the refresh fails, dismiss the overlay silently and show a small toast: "Prices could not be refreshed — last updated at HH:MM"
+- Always show a "Prices as of HH:MM" timestamp below the results header
+
+### 8. Sync shared to all apps after any provider changes
 After editing any file in `packages/shared/src/`, copy the entire `packages/shared/` folder to the same path in: hotel-booking, news-feed, rent-a-car, main-website, games, shopping.

@@ -12,6 +12,12 @@ export interface Airline {
   logo: string;
 }
 
+export interface FlightProviderOffer {
+  provider: string;
+  price: number;
+  bookingUrl: string;
+}
+
 export interface Flight {
   id: string;
   airline: Airline;
@@ -31,6 +37,8 @@ export interface Flight {
   amenities: string[];
   bookingUrl: string;
   provider: string;
+  /** Populated after cross-provider deduplication. Present only when 2+ providers found the same flight. */
+  allOffers?: FlightProviderOffer[];
 }
 
 export type CabinClass = "economy" | "premium_economy" | "business" | "first";

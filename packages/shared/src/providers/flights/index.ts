@@ -13,7 +13,12 @@ export function createFlightRouter(): ProviderRouter<FlightSearchParams, Flight>
   const providers = [];
 
   if (process.env.KIWI_API_KEY) {
-    providers.push(new KiwiFlightProvider(process.env.KIWI_API_KEY));
+    providers.push(
+      new KiwiFlightProvider(
+        process.env.KIWI_API_KEY,
+        process.env.KIWI_AFFILIATE_ID
+      )
+    );
   }
   if (process.env.SKYSCANNER_RAPIDAPI_KEY) {
     providers.push(new SkyscannerFlightProvider(process.env.SKYSCANNER_RAPIDAPI_KEY));

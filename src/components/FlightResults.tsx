@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import type { Flight } from "@/lib/types";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import type { Flight, FlightProviderOffer } from "@/lib/types";
 import { FlightLoadingOverlay, type ProviderStatus } from "./FlightLoadingOverlay";
 import { SearchResults } from "./SearchResults";
 
@@ -24,6 +24,46 @@ interface Props {
 
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
 
+/**
+ * Groups flights that represent the same physical journey across providers.
+ * Key: origin + destination + departure time + arrival time.
+ * Keeps the cheapest price as the lead; attaches allOffers when multiple providers found it.
+ */
+function deduplicateFlights(flights: Flight[]): Flight[] {
+  const groups = new Map<string, Flight[]>();
+
+  for (const flight of flights) {
+    const key = `${flight.origin.code}_${flight.destination.code}_${flight.departureTime}_${flight.arrivalTime}`;
+    const group = groups.get(key);
+    if (group) {
+      group.push(flight);
+    } else {
+      groups.set(key, [flight]);
+    }
+  }
+
+  const result: Flight[] = [];
+  for (const group of groups.values()) {
+    if (group.length === 1) {
+      if (group[0]) result.push(group[0]);
+      continue;
+    }
+    // Sort by price ascending; cheapest becomes the canonical entry
+    group.sort((a, b) => a.price - b.price);
+    const cheapest = group[0];
+    if (!cheapest) continue;
+
+    const allOffers: FlightProviderOffer[] = group.map((f) => ({
+      provider: f.provider,
+      price: f.price,
+      bookingUrl: f.bookingUrl,
+    }));
+
+    result.push({ ...cheapest, allOffers });
+  }
+  return result;
+}
+
 export function FlightResults({ query, providerNames, originCity, destinationCity }: Props) {
   const [flights, setFlights] = useState<Flight[]>([]);
   const [providerStatuses, setProviderStatuses] = useState<ProviderStatus[]>([]);
@@ -43,7 +83,10 @@ export function FlightResults({ query, providerNames, originCity, destinationCit
 
   const fetchFlights = useCallback(
     async (isRefresh = false) => {
-      const providers = providerNames.length > 0 ? providerNames : ["Kiwi", "Skyscanner", "Booking.com Flights"];
+      const providers =
+        providerNames.length > 0
+          ? providerNames
+          : ["Kiwi", "Skyscanner", "Booking.com Flights"];
 
       setProviderStatuses(providers.map((name) => ({ name, status: "loading" })));
       setOverlayVisible(true);
@@ -76,7 +119,6 @@ export function FlightResults({ query, providerNames, originCity, destinationCit
 
             setFlights((prev) => {
               if (isRefresh) {
-                // Replace existing results from this provider
                 const others = prev.filter((f) => f.provider !== providerName);
                 return [...others, ...provFlights];
               }
@@ -129,6 +171,12 @@ export function FlightResults({ query, providerNames, originCity, destinationCit
   const allSettled =
     providerStatuses.length > 0 && providerStatuses.every((p) => p.status !== "loading");
 
+  // Apply deduplication after all providers have resolved
+  const displayFlights = useMemo(
+    () => (allSettled ? deduplicateFlights(flights) : flights),
+    [flights, allSettled]
+  );
+
   const hhmm = lastUpdated
     ? lastUpdated.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
     : "";
@@ -157,9 +205,9 @@ export function FlightResults({ query, providerNames, originCity, destinationCit
       )}
 
       {/* Results or empty state */}
-      {flights.length > 0 ? (
+      {displayFlights.length > 0 ? (
         <SearchResults
-          flights={flights}
+          flights={displayFlights}
           originCity={originCity}
           destinationCity={destinationCity}
           date={query.date}

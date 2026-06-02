@@ -1,5 +1,7 @@
 # FlyMole — TODO2 (Follow-up improvements)
 
+Please fill in Reports2.md as usual when done
+
 ## Permissions
 Ask the user to enable bypass permissions before starting: Claude Code settings → permission mode "bypass", or `claude --dangerously-skip-permissions`.
 

@@ -16,10 +16,14 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
     ? Math.round((1 - flight.price / flight.originalPrice!) * 100)
     : 0;
 
+  // Multi-provider deduplication: use allOffers when the same flight was found by 2+ providers
+  const offers = flight.allOffers ?? [{ provider: flight.provider, price: flight.price, bookingUrl: flight.bookingUrl }];
+  const multiProvider = offers.length > 1;
+
   return (
     <article
       className="group flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md sm:flex-row sm:items-center"
-      aria-label={`${flight.airline.name} flight ${flight.flightNumber} — $${flight.price}`}
+      aria-label={`${flight.airline.name} flight ${flight.flightNumber} — ${fmt(flight.price)}`}
     >
       {/* Airline */}
       <div className="flex min-w-[140px] items-center gap-3">
@@ -41,10 +45,16 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
         <div>
           <p className="text-sm font-semibold text-slate-900">{flight.airline.name}</p>
           <p className="text-xs text-slate-400">{flight.flightNumber}</p>
-          {/* Provider badge */}
-          <span className="mt-0.5 inline-block rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
-            {flight.provider}
-          </span>
+          {/* Provider badge — shows "N providers" when deduplicated, otherwise single provider */}
+          {multiProvider ? (
+            <span className="mt-0.5 inline-block rounded-full bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700">
+              Found on {offers.length} providers
+            </span>
+          ) : (
+            <span className="mt-0.5 inline-block rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+              {flight.provider}
+            </span>
+          )}
         </div>
       </div>
 
@@ -113,17 +123,29 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 sm:items-end">
-          {/* Primary: direct deep-link to the provider that found this deal */}
-          <a
-            href={flight.bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700 active:bg-sky-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1 whitespace-nowrap"
-          >
-            Book on {flight.provider} ↗
-          </a>
-          {/* Secondary: open modal with all affiliate options */}
+        <div className="flex flex-col gap-1.5 sm:items-end">
+          {/* One booking button per provider (cheapest first = index 0, already sorted) */}
+          {offers.map((offer, i) => (
+            <a
+              key={offer.provider}
+              href={offer.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={
+                i === 0
+                  ? "rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700 active:bg-sky-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1 whitespace-nowrap"
+                  : "rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 active:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300 whitespace-nowrap"
+              }
+            >
+              {i === 0 ? "Book" : "Also"} on {offer.provider}
+              {multiProvider && i > 0 && (
+                <span className="ml-1 text-slate-400">{fmt(offer.price)}</span>
+              )}
+              {" ↗"}
+            </a>
+          ))}
+
+          {/* Compare modal — always present */}
           <button
             onClick={() => onSelect?.(flight)}
             className="rounded-lg border border-slate-200 px-4 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-50 active:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300 whitespace-nowrap"

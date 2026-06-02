@@ -58,11 +58,24 @@ interface KiwiFlight {
   deep_link: string;
 }
 
+function appendAffiliateId(url: string, affiliateId: string): string {
+  try {
+    const u = new URL(url);
+    u.searchParams.set("affiliate_id", affiliateId);
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 export class KiwiFlightProvider implements FlightProvider {
   readonly name = "Kiwi";
   readonly supportedCountries: string[] = [];
 
-  constructor(private readonly apiKey: string) {}
+  constructor(
+    private readonly apiKey: string,
+    private readonly affiliateId?: string
+  ) {}
 
   async search(params: FlightSearchParams): Promise<Flight[]> {
     const currency = params.currency || getCurrencyForCountry(params.country);
@@ -131,7 +144,9 @@ export class KiwiFlightProvider implements FlightProvider {
         price: price(f.price, currency),
         durationMinutes,
         stops,
-        bookingUrl: f.deep_link,
+        bookingUrl: this.affiliateId
+          ? appendAffiliateId(f.deep_link, this.affiliateId)
+          : f.deep_link,
         provider: this.name,
       } satisfies Flight;
     });

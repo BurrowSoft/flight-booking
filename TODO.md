@@ -45,5 +45,21 @@ File: `src/app/search/` or equivalent results page
 - Show each result's source provider badge (Skyscanner / Booking.com / Kiwi)
 - If the same flight appears from multiple providers at different prices, group and show the cheapest with a "X providers" indicator
 
-### 5. Sync shared to all apps after any provider changes
+### 5. Loading overlay — show while APIs are fetching
+The search results page must show a full-screen (or above-the-fold) loading overlay while provider calls are in flight. Requirements:
+- Each active provider fetches concurrently; the overlay displays one animated line per provider, e.g. "Loading flights from Skyscanner…" / "Loading flights from Booking.com…" / "Loading flights from Kiwi…"
+- As each provider resolves, its line gets a checkmark and its results stream into the list below
+- If a provider fails or times out, its line shows "Skyscanner unavailable" in muted text — no hard error
+- Implement as a client component (`<FlightLoadingOverlay providers={string[]} />`) that receives the list of provider names being polled
+- The overlay fades out once all providers have settled
+
+### 6. Provider redirect buttons
+Every flight result card must have a clearly labelled booking button that sends the user directly to that provider's booking page with the deal pre-filled. Requirements:
+- Button label: "Book on [Provider]" (e.g. "Book on Skyscanner", "Book on Booking.com")
+- Each provider class must expose a `bookingUrl(flight: Flight): string` method returning the deep-link URL with origin, destination, dates, and passenger count pre-filled
+- If a flight appears from multiple providers, show multiple buttons (cheapest highlighted)
+- Buttons open in a new tab (`target="_blank" rel="noopener noreferrer"`)
+- Affiliate tracking params must be appended where applicable (Skyscanner affiliate ID, Travelpayouts marker, etc.)
+
+### 7. Sync shared to all apps after any provider changes
 After editing any file in `packages/shared/src/`, copy the entire `packages/shared/` folder to the same path in: hotel-booking, news-feed, rent-a-car, main-website, games, shopping.

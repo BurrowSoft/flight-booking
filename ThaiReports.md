@@ -29,7 +29,7 @@
 - Prices requested from providers in THB
 
 ## Thai-specific Features
-- **Lazada floating ad** (`LazadaFloatingAd.tsx`) — shown only when `locale === "th"`, two affiliate links, dismissible per-item
+- **`RegionalFloatingAd`** from `@burrowsoft/shared` — replaces the local `LazadaFloatingAd.tsx`. Renders only when `locale === "th"`. Lazada orange header, two affiliate links, single dismiss button (per-session). Configuration lives in `REGIONAL_ADS["th"]` in the shared package — update there to change copy or links across all apps.
 
 ## Affiliate Links (Thai market)
 | Partner | Status | Notes |

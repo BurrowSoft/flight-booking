@@ -9,8 +9,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from "@/lib/seo";
 import { getCurrencyForCountry } from "@/lib/currency";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
-import { LanguageSelector } from "@burrowsoft/shared";
-import { LazadaFloatingAd } from "@/components/LazadaFloatingAd";
+import { LanguageSelector, RegionalFloatingAd } from "@burrowsoft/shared";
 import { detectCountry } from "@burrowsoft/shared";
 import "./globals.css";
 
@@ -204,7 +203,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               </p>
             </div>
           </footer>
-          <LazadaFloatingAd />
+          <RegionalFloatingAd />
           <Analytics />
         </NextIntlClientProvider>
       </body>

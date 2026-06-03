@@ -285,6 +285,9 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
           {/* No results fallback */}
           {!loading && flights.length === 0 && (
             <div className="space-y-3">
+              <p className="text-sm text-slate-500 mb-1">
+                No direct results — search on these sites instead:
+              </p>
               {affiliateLinks.map(link => (
                 <a
                   key={link.id}
@@ -301,6 +304,9 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
                   <span className="text-sky-600 text-sm font-medium">Search flights ↗</span>
                 </a>
               ))}
+              <p className="text-xs text-slate-400 pt-1">
+                Or try <button onClick={() => setMode("kiwi")} className="underline hover:text-sky-600">Kiwi Results</button> for more options.
+              </p>
             </div>
           )}
         </>

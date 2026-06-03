@@ -1,9 +1,7 @@
 ﻿import { type NextRequest, NextResponse } from "next/server";
 
 const VALID_LOCALES = ["en","th","es","ru","pt-BR","fr","ja","zh","zh-TW","ar","de","id","ko","it","vi"] as const;
-type Locale = (typeof VALID_LOCALES)[number];
 
-// Maps locale code → ISO country code for detectCountry() spoofing
 const LOCALE_TO_COUNTRY: Record<string, string> = {
   th: "TH", es: "ES", ru: "RU", "pt-BR": "BR", fr: "FR",
   ja: "JP", zh: "CN", "zh-TW": "TW", ar: "SA", de: "DE",
@@ -31,15 +29,25 @@ const COUNTRY_LOCALE: Record<string, string> = {
   RU: "ru", UA: "ru", KZ: "ru", BY: "ru",
 };
 
+function patchCookieLocale(req: NextRequest, locale: string): Headers {
+  const reqHeaders = new Headers(req.headers);
+  // Patch Cookie header so server components read new locale immediately (same request)
+  const existing = req.headers.get("cookie") ?? "";
+  const filtered = existing.split(";").filter(c => !c.trim().startsWith("NEXT_LOCALE="));
+  filtered.push(`NEXT_LOCALE=${locale}`);
+  reqHeaders.set("cookie", filtered.join("; "));
+  return reqHeaders;
+}
+
 export function middleware(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
-  // Dev mode: ?dev=1&country=th overrides locale + spoofs country header
+  // Dev mode: ?dev=1&country=th — takes effect on THIS request, no refresh needed
   if (searchParams.get("dev") === "1") {
     const devLocale = searchParams.get("country") as string;
     if (devLocale && (VALID_LOCALES as readonly string[]).includes(devLocale)) {
       const devCountry = LOCALE_TO_COUNTRY[devLocale] ?? "US";
-      const reqHeaders = new Headers(req.headers);
+      const reqHeaders = patchCookieLocale(req, devLocale);
       reqHeaders.set("x-vercel-ip-country", devCountry);
 
       const res = NextResponse.next({ request: { headers: reqHeaders } });
@@ -52,10 +60,8 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // Normal flow: cookie already set — pass through
   if (req.cookies.has("NEXT_LOCALE")) return NextResponse.next();
 
-  // First visit: detect country and seed cookie
   const country =
     req.headers.get("x-vercel-ip-country") ??
     req.headers.get("cf-ipcountry") ??

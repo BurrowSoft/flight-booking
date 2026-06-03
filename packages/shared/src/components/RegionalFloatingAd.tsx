@@ -57,7 +57,7 @@ export function RegionalFloatingAd() {
 
   return (
     <div
-      className="fixed bottom-5 right-4 z-50 w-56 overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200"
+      className="fixed bottom-5 right-4 z-[9999] w-56 overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200"
       role="complementary"
       aria-label={`${config.brand} promotion`}
     >

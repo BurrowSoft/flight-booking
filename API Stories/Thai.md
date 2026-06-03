@@ -49,3 +49,11 @@ When locale is `th` / country is `TH`, show first:
 
 ### 5. Sync packages/shared after changes
 Copy `packages/shared/` to: hotel-booking, news-feed, rent-a-car, main-website, games, shopping.
+
+---
+
+## Ikhlas Travel Affiliate (pending approval)
+- Registered via the same partner portal as AirAsia
+- Muslim-friendly travel brand — relevant for TH south, MY, ID markets
+- Once approved: add script/widget injection in `TravelpayoutsScript.tsx` or a new `IkhlasScript.tsx` following the same `useLocale()` + `useEffect` pattern as TODO6
+- Relevant for hotel-booking too (halal-friendly accommodation)

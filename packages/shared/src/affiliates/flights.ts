@@ -13,7 +13,34 @@ interface FlightSearchParams {
   adults: number;
   country: string;      // ISO-3166-1 visitor country (unused for now, kept for future use)
 }
+// Airports whose IATA codes Trip.com resolves correctly in dcity/acity URL params.
+// Western airports (JFK, LHR, CDG…) are ignored — Trip.com falls back to session/recent search.
+const TRIP_COM_AIRPORTS = new Set([
+  // Thailand
+  "BKK","DMK","HKT","CNX","HDY","UTP","CEI","NST","KBV","UBP","LOE","KKC","HHQ","NAN",
+  // Southeast Asia
+  "SIN","KUL","PEN","BKI","LGK","JHB",
+  "CGK","DPS","SUB","UPG","MES","BPN",
+  "MNL","CEB","DVO","ILO",
+  "SGN","HAN","DAD","CXR","PQC","VCA",
+  "REP","PNH","RGN","VTE","LPQ",
+  // Japan
+  "NRT","HND","KIX","NGO","CTS","FUK","OKA",
+  // Korea
+  "ICN","GMP","PUS","CJU",
+  // China / HK / TW
+  "PEK","PVG","SHA","CAN","SZX","CTU","HGH","KMG","HKG","MFM","TPE","KHH",
+  // India
+  "BOM","DEL","MAA","BLR","CCU","HYD","AMD","GOI",
+  // Other Asia
+  "CMB","DAC","KTM",
+]);
 
+// Only include dcity/acity params if Trip.com can resolve the airport code
+function toTripComParam(iata: string): string | null {
+  const code = toTripComCode(iata);
+  return TRIP_COM_AIRPORTS.has(code) ? code : null;
+}
 
 // Trip.com uses primary city-airport codes — map secondary airports to their city hub
 const TRIP_COM_CODE: Record<string, string> = {
@@ -55,16 +82,17 @@ const AFFILIATES: Array<FlightAffiliateLink & {
     description: "Compare hundreds of airlines worldwide",
     url: "",
     // Path-based URLs (/flights/JFK-BKK/tickets-...) return 404 — use query-string format instead.
-    showFor: () => true,
+    // Only show when at least one airport resolves correctly in Trip.com's URL params.
+    // Western airports (JFK, LHR…) are silently ignored by Trip.com, causing wrong-city pre-fills.
+    showFor: ({ from, to }) => !!(toTripComParam(from) || toTripComParam(to)),
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
-      const tcFrom = toTripComCode(from);
-      const tcTo = toTripComCode(to);
-      // dcity fills correctly for Asian airports; may be blank for Western airports (JFK etc) — acceptable
+      const tcFrom = toTripComParam(from);
+      const tcTo = toTripComParam(to);
       const params = new URLSearchParams({
         flighttype: tripType,
-        dcity: tcFrom,
-        acity: tcTo,
+        ...(tcFrom ? { dcity: tcFrom } : {}),
+        ...(tcTo ? { acity: tcTo } : {}),
         ddate: date,
         adult: String(adults),
         Allianceid: "8495775",

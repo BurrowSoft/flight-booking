@@ -38,10 +38,36 @@ const cabinLabels: Record<CabinClass, string> = {
   first: "First Class",
 };
 
-export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
+interface FlightSearchFormProps {
+  compact?: boolean;
+  initialFrom?: string;
+  initialTo?: string;
+  initialDate?: string;
+  initialReturn?: string;
+  initialAdults?: number;
+  initialTripType?: TripType;
+}
+
+export function FlightSearchForm({
+  compact = false,
+  initialFrom,
+  initialTo,
+  initialDate,
+  initialReturn,
+  initialAdults,
+  initialTripType,
+}: FlightSearchFormProps) {
   const router = useRouter();
   const t = useTranslations("search");
-  const [form, setForm] = useState<FormState>(initialState);
+  const [form, setForm] = useState<FormState>({
+    ...initialState,
+    ...(initialFrom ? { origin: initialFrom } : {}),
+    ...(initialTo ? { destination: initialTo } : {}),
+    ...(initialDate ? { departDate: initialDate } : {}),
+    ...(initialReturn ? { returnDate: initialReturn, tripType: "roundtrip" } : {}),
+    ...(initialAdults ? { adults: initialAdults } : {}),
+    ...(initialTripType ? { tripType: initialTripType } : {}),
+  });
   const [error, setError] = useState<string | null>(null);
 
   const set = useCallback(<K extends keyof FormState>(key: K, value: FormState[K]) => {

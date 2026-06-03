@@ -62,7 +62,15 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
       </nav>
 
       <div className="mb-8">
-        <FlightSearchForm compact />
+        <FlightSearchForm
+          compact
+          initialFrom={originCode}
+          initialTo={destinationCode}
+          initialDate={date}
+          initialReturn={returnDate}
+          initialAdults={adults}
+          initialTripType={returnDate ? "roundtrip" : "oneway"}
+        />
       </div>
 
       <div className="mb-6">

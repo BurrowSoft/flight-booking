@@ -20,13 +20,14 @@ import { LanguageSelector, RegionalFloatingAd } from "@burrowsoft/shared";
 import { detectCountry } from "@burrowsoft/shared";
 import "./globals.css";
 
-// CJK / Arabic fonts don't use explicit subsets — Google Fonts serves them via unicode-range
+// preload:false on CJK/Arabic fonts — only activated per-locale, no reason to preload globally.
+// next/font requires either subsets or preload:false when preload is enabled.
 const sarabun = Sarabun({ subsets: ["thai", "latin"], weight: ["400","600","700"], variable: "--font-sarabun", display: "swap" });
-const notoJP  = Noto_Sans_JP({ weight: ["400","700"], variable: "--font-noto-jp", display: "swap" });
-const notoSC  = Noto_Sans_SC({ weight: ["400","700"], variable: "--font-noto-sc", display: "swap" });
-const notoTC  = Noto_Sans_TC({ weight: ["400","700"], variable: "--font-noto-tc", display: "swap" });
-const notoKR  = Noto_Sans_KR({ weight: ["400","700"], variable: "--font-noto-kr", display: "swap" });
-const notoAR  = Noto_Sans_Arabic({ subsets: ["arabic"], weight: ["400","700"], variable: "--font-noto-ar", display: "swap" });
+const notoJP  = Noto_Sans_JP({ preload: false, weight: ["400","700"], variable: "--font-noto-jp", display: "swap" });
+const notoSC  = Noto_Sans_SC({ preload: false, weight: ["400","700"], variable: "--font-noto-sc", display: "swap" });
+const notoTC  = Noto_Sans_TC({ preload: false, weight: ["400","700"], variable: "--font-noto-tc", display: "swap" });
+const notoKR  = Noto_Sans_KR({ preload: false, weight: ["400","700"], variable: "--font-noto-kr", display: "swap" });
+const notoAR  = Noto_Sans_Arabic({ preload: false, weight: ["400","700"], variable: "--font-noto-ar", display: "swap" });
 
 // All font variables injected on <html> so CSS can reference them regardless of locale
 const ALL_FONT_VARS = [sarabun.variable, notoJP.variable, notoSC.variable, notoTC.variable, notoKR.variable, notoAR.variable].join(" ");

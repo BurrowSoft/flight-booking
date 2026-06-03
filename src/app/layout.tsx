@@ -11,7 +11,6 @@ import { getCurrencyForCountry } from "@/lib/currency";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
 import { LanguageSelector, RegionalFloatingAd } from "@burrowsoft/shared";
 import { detectCountry } from "@burrowsoft/shared";
-import { TravelpayoutsScript } from "@/components/TravelpayoutsScript";
 import "./globals.css";
 
 const sarabun = Sarabun({
@@ -104,6 +103,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
             crossOrigin="anonymous"
           />
+        )}
+        {locale === "th" && (
+          <script async src="https://tp-em.com/NTM1Njcy.js?t=535672" />
         )}
       </head>
       <body
@@ -204,7 +206,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               </p>
             </div>
           </footer>
-          <TravelpayoutsScript />
           <RegionalFloatingAd />
           <Analytics />
         </NextIntlClientProvider>

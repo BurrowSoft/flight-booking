@@ -88,8 +88,9 @@ const AFFILIATES: Array<FlightAffiliateLink & {
     name: "Trip.com",
     description: "Compare hundreds of airlines worldwide",
     url: "",
-    // Only show when the route involves Asia — Trip.com has thin inventory elsewhere
-    showFor: ({ from, to }) => isAsianRoute(from, to),
+    // Disabled: Trip.com changed their URL structure — all path-based deep links
+    // now return 404. Re-enable when they provide a working affiliate URL format.
+    showFor: () => false,
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
       const tcFrom = toTripComCode(from);

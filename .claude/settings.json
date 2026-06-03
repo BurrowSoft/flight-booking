@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Read(//c/Users/VICTUS/Desktop/burrowsoft-web-apps/**)"
+      "Read(//c/Users/VICTUS/Desktop/burrowsoft-web-apps/**)",
+      "WebFetch(domain:flymole.com)",
+      "WebFetch(domain:www.trip.com)",
+      "WebFetch(domain:us.trip.com)"
     ],
     "additionalDirectories": [
       "c:\\Users\\VICTUS\\Desktop\\burrowsoft-web-apps",

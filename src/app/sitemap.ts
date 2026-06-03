@@ -1,25 +1,36 @@
 import type { MetadataRoute } from "next";
 import { POPULAR_ROUTES } from "@/lib/data";
-import { SITE_URL } from "@/lib/seo";
+import { routing } from "@/i18n/routing";
+
+const BASE = "https://www.flymole.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const entries: MetadataRoute.Sitemap = [];
 
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: SITE_URL,
+  // Home page — one entry per locale
+  for (const locale of routing.locales) {
+    const prefix = locale === "en" ? "" : `/${locale}`;
+    entries.push({
+      url: `${BASE}${prefix}/`,
       lastModified: now,
       changeFrequency: "daily",
       priority: 1.0,
-    },
-  ];
+    });
+  }
 
-  const routePages: MetadataRoute.Sitemap = POPULAR_ROUTES.map((route) => ({
-    url: `${SITE_URL}/flights/${route.slug}`,
-    lastModified: now,
-    changeFrequency: "daily",
-    priority: 0.9,
-  }));
+  // Flight route pages — English + all locales
+  for (const route of POPULAR_ROUTES) {
+    for (const locale of routing.locales) {
+      const prefix = locale === "en" ? "" : `/${locale}`;
+      entries.push({
+        url: `${BASE}${prefix}/flights/${route.slug}`,
+        lastModified: now,
+        changeFrequency: "daily",
+        priority: 0.9,
+      });
+    }
+  }
 
-  return [...staticPages, ...routePages];
+  return entries;
 }

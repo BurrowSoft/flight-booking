@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { FlightSearchForm } from "@/components/FlightSearchForm";
 import { Price } from "@/components/Price";
 import { AdUnit } from "@/components/AdUnit";
@@ -21,26 +21,10 @@ const stats = [
 ];
 
 const features = [
-  {
-    icon: "🔍",
-    title: "Compare 500+ Airlines",
-    description: "We search hundreds of airlines and booking sites simultaneously to find you the lowest prices.",
-  },
-  {
-    icon: "💰",
-    title: "Best Price Guarantee",
-    description: "Found a lower price elsewhere? We'll match it. Pay no hidden fees or booking charges.",
-  },
-  {
-    icon: "⚡",
-    title: "Instant Confirmation",
-    description: "Book in seconds with instant confirmation. Receive your e-ticket directly to your inbox.",
-  },
-  {
-    icon: "🔔",
-    title: "Price Alerts",
-    description: "Set fare alerts for your route and get notified when prices drop.",
-  },
+  { icon: "🔍", title: "Compare 500+ Airlines", description: "We search hundreds of airlines and booking sites simultaneously to find you the lowest prices." },
+  { icon: "💰", title: "Best Price Guarantee", description: "Found a lower price elsewhere? We'll match it. Pay no hidden fees or booking charges." },
+  { icon: "⚡", title: "Instant Confirmation", description: "Book in seconds with instant confirmation. Receive your e-ticket directly to your inbox." },
+  { icon: "🔔", title: "Price Alerts", description: "Set fare alerts for your route and get notified when prices drop." },
 ];
 
 export default async function HomePage() {
@@ -49,27 +33,17 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section
-        className="relative overflow-hidden bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 pb-24 pt-16"
-        aria-labelledby="hero-heading"
-      >
+      <section className="relative overflow-hidden bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 pb-24 pt-16" aria-labelledby="hero-heading">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.04\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
         <div className="relative mx-auto max-w-5xl px-4 text-center">
-          <h1
-            id="hero-heading"
-            className="mb-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl"
-          >
+          <h1 id="hero-heading" className="mb-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
             {t("title")}
           </h1>
-          <p className="mb-10 text-lg text-sky-100 sm:text-xl">
-            {t("subtitle")}
-          </p>
+          <p className="mb-10 text-lg text-sky-100 sm:text-xl">{t("subtitle")}</p>
           <FlightSearchForm />
         </div>
       </section>
 
-      {/* Stats */}
       <section className="border-b border-slate-200 bg-white" aria-label="Platform statistics">
         <div className="mx-auto max-w-5xl px-4 py-8">
           <dl className="grid grid-cols-2 gap-6 sm:grid-cols-4">
@@ -83,14 +57,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Popular routes */}
       <section className="mx-auto max-w-7xl px-4 py-14" aria-labelledby="routes-heading">
-        <h2 id="routes-heading" className="mb-2 text-2xl font-bold text-slate-900">
-          Popular Flight Routes
-        </h2>
-        <p className="mb-8 text-slate-500">
-          Explore top destinations from cities across the US. Prices updated daily.
-        </p>
+        <h2 id="routes-heading" className="mb-2 text-2xl font-bold text-slate-900">Popular Flight Routes</h2>
+        <p className="mb-8 text-slate-500">Explore top destinations from cities across the US. Prices updated daily.</p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {featuredRoutes.map((route) => (
             <Link
@@ -100,14 +69,10 @@ export default async function HomePage() {
               aria-label={`${route.originCity} to ${route.destinationCity}`}
             >
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  {route.originCode} → {route.destinationCode}
-                </span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">{route.originCode} → {route.destinationCode}</span>
                 <span className="text-xs text-slate-400">~{route.durationHours}h</span>
               </div>
-              <p className="font-semibold text-slate-900 group-hover:text-sky-600 transition-colors">
-                {route.originCity} → {route.destinationCity}
-              </p>
+              <p className="font-semibold text-slate-900 group-hover:text-sky-600 transition-colors">{route.originCity} → {route.destinationCity}</p>
               <p className="text-xs text-slate-400">{route.destinationCountry}</p>
               <div className="mt-3 flex items-baseline gap-1">
                 <span className="text-xs text-slate-400">from</span>
@@ -118,20 +83,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Ad — between popular routes and features */}
       <div className="mx-auto max-w-5xl px-4 py-2">
         <AdUnit slot="HOME_BANNER_SLOT" format="horizontal" />
       </div>
 
-      {/* Features */}
       <section className="bg-white py-14" aria-labelledby="features-heading">
         <div className="mx-auto max-w-7xl px-4">
-          <h2 id="features-heading" className="mb-2 text-center text-2xl font-bold text-slate-900">
-            Why Book with {SITE_NAME}?
-          </h2>
-          <p className="mb-10 text-center text-slate-500">
-            We make finding and booking flights simple, fast, and affordable.
-          </p>
+          <h2 id="features-heading" className="mb-2 text-center text-2xl font-bold text-slate-900">Why Book with {SITE_NAME}?</h2>
+          <p className="mb-10 text-center text-slate-500">We make finding and booking flights simple, fast, and affordable.</p>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((f) => (
               <div key={f.title} className="rounded-xl border border-slate-100 bg-slate-50 p-5">
@@ -144,31 +103,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* SEO content block */}
       <section className="mx-auto max-w-4xl px-4 py-14" aria-labelledby="seo-content-heading">
-        <h2 id="seo-content-heading" className="mb-4 text-xl font-bold text-slate-900">
-          Cheap Flights — How to Find the Best Deals
-        </h2>
+        <h2 id="seo-content-heading" className="mb-4 text-xl font-bold text-slate-900">Cheap Flights — How to Find the Best Deals</h2>
         <div className="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed space-y-3">
-          <p>
-            Finding cheap flights doesn&apos;t have to be complicated. {SITE_NAME} searches across
-            hundreds of airlines and travel sites simultaneously so you see all available options
-            in one place. Whether you&apos;re looking for last-minute deals or planning months in
-            advance, our comparison engine surfaces the best prices for your route.
-          </p>
+          <p>Finding cheap flights doesn&apos;t have to be complicated. {SITE_NAME} searches across hundreds of airlines and travel sites simultaneously so you see all available options in one place.</p>
           <p>
             The best time to book a flight varies by route and season. For transatlantic flights
             (e.g., <Link href="/flights/new-york-to-london" className="text-sky-600 hover:underline">New York to London</Link> or{" "}
             <Link href="/flights/new-york-to-paris" className="text-sky-600 hover:underline">New York to Paris</Link>),
-            booking 6–8 weeks in advance typically yields the lowest fares. For transpacific routes
-            like <Link href="/flights/los-angeles-to-tokyo" className="text-sky-600 hover:underline">Los Angeles to Tokyo</Link>,
-            booking 3–4 months ahead is recommended.
+            booking 6–8 weeks in advance typically yields the lowest fares.
           </p>
-          <p>
-            Flexible travel dates can save you hundreds. Use our calendar view to compare prices
-            across multiple days and find the cheapest day to fly. Flying on Tuesdays and Wednesdays
-            is generally cheaper than weekends.
-          </p>
+          <p>Flexible travel dates can save you hundreds. Flying on Tuesdays and Wednesdays is generally cheaper than weekends.</p>
         </div>
       </section>
     </>

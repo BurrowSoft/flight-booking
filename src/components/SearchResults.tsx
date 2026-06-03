@@ -18,7 +18,7 @@ export function SearchResults({ flights, originCity, destinationCity, date }: Pr
   const fmt = useFormatPrice();
   const [sortBy, setSortBy] = useState<SortOption>("price");
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
-  const [maxPrice, setMaxPrice] = useState<number>(Infinity);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null); // null = no limit
   const [directOnly, setDirectOnly] = useState(false);
   const [selectedAirlines, setSelectedAirlines] = useState<Set<string>>(new Set());
 
@@ -41,9 +41,11 @@ export function SearchResults({ flights, originCity, destinationCity, date }: Pr
     });
   };
 
+  const effectiveMax = maxPrice ?? maxFlightPrice;
+
   const filtered = useMemo(() => {
     return flights
-      .filter((f) => f.price <= maxPrice)
+      .filter((f) => maxPrice === null || f.price <= maxPrice)
       .filter((f) => !directOnly || f.stops === 0)
       .filter((f) => selectedAirlines.size === 0 || selectedAirlines.has(f.airline.name));
   }, [flights, maxPrice, directOnly, selectedAirlines]);
@@ -80,7 +82,7 @@ export function SearchResults({ flights, originCity, destinationCity, date }: Pr
             <label className="mb-2 flex justify-between text-xs font-medium text-slate-600">
               <span>Max price</span>
               <span className="font-semibold text-sky-600">
-                {maxPrice >= maxFlightPrice ? "Any" : fmt(maxPrice)}
+                {maxPrice === null || maxPrice >= maxFlightPrice ? "Any" : fmt(maxPrice)}
               </span>
             </label>
             <input
@@ -88,7 +90,7 @@ export function SearchResults({ flights, originCity, destinationCity, date }: Pr
               min={0}
               max={maxFlightPrice}
               step={50}
-              value={Math.min(maxPrice, maxFlightPrice)}
+              value={effectiveMax}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full accent-sky-600"
             />
@@ -126,7 +128,7 @@ export function SearchResults({ flights, originCity, destinationCity, date }: Pr
           {/* Reset */}
           <button
             onClick={() => {
-              setMaxPrice(Infinity);
+              setMaxPrice(null);
               setDirectOnly(false);
               setSelectedAirlines(new Set());
             }}

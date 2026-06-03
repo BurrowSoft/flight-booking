@@ -24,7 +24,7 @@ function defaultAmenities(cabin: CabinClass): string[] {
   return ["Carry-on included", "In-flight entertainment", "Seat selection"];
 }
 
-function mapSharedFlight(f: SharedFlight, cabin: CabinClass): Flight {
+export function mapSharedFlight(f: SharedFlight, cabin: CabinClass): Flight {
   const airlineCode = f.flightNumber.slice(0, 2).toUpperCase();
   return {
     id: f.id,

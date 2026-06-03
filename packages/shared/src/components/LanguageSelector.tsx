@@ -19,6 +19,8 @@ export const LOCALE_NAMES: Record<string, string> = {
   es: "Español",
   fr: "Français",
   de: "Deutsch",
+  it: "Italiano",
+  ru: "Русский",
   ar: "العربية",
   vi: "Tiếng Việt",
   hi: "हिन्दी",

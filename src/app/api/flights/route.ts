@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   const cabin = (sp.get("cabin") ?? "economy") as CabinClass;
   const currency = sp.get("currency") ?? "USD";
   const country = sp.get("country") ?? "US";
+  const returnDate = sp.get("return") ?? undefined;
   const providerName = sp.get("provider");
 
   if (!from || !to || !date) {
@@ -26,6 +27,7 @@ export async function GET(request: NextRequest) {
     origin: from.toUpperCase(),
     destination: to.toUpperCase(),
     departureDate: date,
+    returnDate,
     adults,
     cabinClass: cabin === "premium_economy" ? "economy" : (cabin as "economy" | "business" | "first"),
     currency,

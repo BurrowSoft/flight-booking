@@ -99,6 +99,7 @@ export function buildAirports(): Record<string, Airport> {
       city: CITY_OVERRIDES[raw.iata] ?? extractCity(raw.name),
       country: countryName(raw.iso ?? ""),
       continent: CONTINENT[raw.continent ?? ""] ?? raw.continent ?? "",
+      isPrimary: raw.size === "large",
     };
   }
 

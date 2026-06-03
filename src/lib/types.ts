@@ -4,6 +4,7 @@ export interface Airport {
   city: string;
   country: string;
   continent: string;
+  isPrimary: boolean; // true = large airport (main hub for the city)
 }
 
 export interface Airline {

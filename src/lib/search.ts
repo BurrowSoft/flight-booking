@@ -40,6 +40,7 @@ export function mapSharedFlight(f: SharedFlight, cabin: CabinClass): Flight {
       city: f.origin.city || f.origin.code,
       country: f.origin.country,
       continent: "",
+      isPrimary: false,
     },
     destination: {
       code: f.destination.code,
@@ -47,6 +48,7 @@ export function mapSharedFlight(f: SharedFlight, cabin: CabinClass): Flight {
       city: f.destination.city || f.destination.code,
       country: f.destination.country,
       continent: "",
+      isPrimary: false,
     },
     departureTime: toHHMM(f.departureTime),
     arrivalTime: toHHMM(f.arrivalTime),

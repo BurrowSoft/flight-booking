@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { FlightSearchForm } from "@/components/FlightSearchForm";
-import { FlightResults } from "@/components/FlightResults";
+import { FlightResultsView } from "@/components/FlightResultsView";
 import { AIRPORTS } from "@/lib/data";
 import { buildSearchMetadata } from "@/lib/seo";
 import type { CabinClass } from "@/lib/types";
-import { detectCountry, getCurrencyForCountry, createFlightRouter } from "@burrowsoft/shared";
+import { detectCountry } from "@burrowsoft/shared";
 import { getLocale } from "next-intl/server";
 
 interface SearchPageProps {
@@ -14,6 +14,7 @@ interface SearchPageProps {
     from?: string;
     to?: string;
     date?: string;
+    return?: string;
     adults?: string;
     cabin?: string;
   }>;
@@ -36,21 +37,17 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const hdrs = await headers();
   const country = detectCountry(Object.fromEntries(hdrs.entries()));
   const locale = await getLocale();
-  // Match the layout's currency logic: Thai locale always uses THB regardless of IP country
-  const currency = locale === "th" ? "THB" : getCurrencyForCountry(country);
 
   const originCode = (params.from ?? "JFK").toUpperCase();
   const destinationCode = (params.to ?? "LHR").toUpperCase();
   const date = params.date ?? new Date().toISOString().slice(0, 10);
-  const cabin = (params.cabin ?? "economy") as CabinClass;
+  const returnDate = params.return;
   const adults = Math.max(1, parseInt(params.adults ?? "1", 10));
+  // cabin kept for metadata / future use
+  const _cabin = (params.cabin ?? "economy") as CabinClass; void _cabin;
 
   const origin = AIRPORTS[originCode];
   const destination = AIRPORTS[destinationCode];
-
-  // Resolve active provider names server-side so the client overlay knows what to show
-  const router = createFlightRouter();
-  const providerNames = router.getProvidersForCountry(country).map((p: { name: string }) => p.name);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -68,7 +65,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <FlightSearchForm compact />
       </div>
 
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6">
         <h1 className="text-xl font-bold text-slate-900">
           {origin?.city ?? originCode} → {destination?.city ?? destinationCode}
           {date && (
@@ -77,19 +74,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </h1>
       </div>
 
-      <FlightResults
-        query={{
-          from: originCode,
-          to: destinationCode,
-          date,
-          adults,
-          cabin,
-          currency,
-          country,
-        }}
-        providerNames={providerNames}
-        originCity={origin?.city ?? originCode}
-        destinationCity={destination?.city ?? destinationCode}
+      <FlightResultsView
+        from={originCode}
+        to={destinationCode}
+        date={date}
+        returnDate={returnDate}
+        adults={adults}
+        locale={locale}
+        country={country}
       />
     </div>
   );

@@ -130,6 +130,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <script async src="https://tp-em.com/NTM1Njcy.js?t=535672" />
         )}
         <meta name="fo-verify" content="bdce966d-7d2e-45a4-82d7-9a566f46d6ca" />
+        <meta name="fo-verify" content="bbc63628-c7bf-452c-aa36-d70a12ac92ba" />
       </head>
       <body
         className="min-h-screen bg-slate-50 text-slate-900 antialiased"

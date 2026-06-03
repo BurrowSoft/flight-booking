@@ -15,6 +15,25 @@ interface Props {
 
 type Mode = "kiwi" | "other";
 
+// Matches the shape returned by /api/flights (after mapSharedFlight in route.ts)
+interface FlightResult {
+  id: string;
+  airline: { code: string; name: string; logo: string };
+  flightNumber: string;
+  departureTime: string;  // "HH:MM"
+  arrivalTime: string;    // "HH:MM"
+  durationMinutes: number;
+  stops: number;
+  price: number;
+  currency: string;
+}
+
+function fmtDuration(mins: number): string {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
 const WIDGET_LOCALE: Record<string, string> = {
   en: "en", th: "th", es: "es", ru: "ru",
   "pt-BR": "pt", fr: "fr", ja: "ja", zh: "zh",
@@ -26,6 +45,12 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
   const [mode, setMode] = useState<Mode>("kiwi");
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // "other" mode state
+  const [flights, setFlights] = useState<FlightResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Kiwi widget
   useEffect(() => {
     if (mode !== "kiwi") return;
     const container = containerRef.current;
@@ -61,7 +86,34 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
     return () => { container.innerHTML = ""; };
   }, [mode, from, to, date, returnDate, locale]);
 
-  const links = buildFlightAffiliateLinks({ from, to, date, returnDate, adults, country });
+  // Fetch real flights for "other" mode
+  useEffect(() => {
+    if (mode !== "other") return;
+    setLoading(true);
+    setError(null);
+
+    const params = new URLSearchParams({
+      from, to, date,
+      adults: String(adults),
+      cabin: "economy",
+      currency: "USD",
+      country,
+      ...(returnDate ? { return: returnDate } : {}),
+    });
+
+    fetch(`/api/flights?${params}`)
+      .then(r => r.json())
+      .then((data: { flights?: FlightResult[] }) => {
+        setFlights(data.flights ?? []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("Could not load flights. Try the links below.");
+        setLoading(false);
+      });
+  }, [mode, from, to, date, returnDate, adults, country]);
+
+  const affiliateLinks = buildFlightAffiliateLinks({ from, to, date, returnDate, adults, country });
 
   return (
     <div>
@@ -87,30 +139,109 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
         <div ref={containerRef} className="w-full min-h-[400px]" />
       )}
 
-      {/* Affiliate deep links */}
+      {/* Other Results */}
       {mode === "other" && (
-        <div className="grid gap-4">
-          {links.map((link) => (
-            <a
-              key={link.id}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-6 py-4 shadow-sm hover:shadow-md hover:border-sky-300 transition-all"
-            >
-              <div>
-                <div className="font-semibold text-slate-900">{link.name}</div>
-                <div className="text-sm text-slate-500 mt-0.5">{link.description}</div>
-              </div>
-              <div className="flex items-center gap-2 text-sky-600 font-medium text-sm">
-                Search flights
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </div>
-            </a>
-          ))}
-        </div>
+        <>
+          {/* Loading skeletons */}
+          {loading && (
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-24 rounded-xl bg-slate-100 animate-pulse" />
+              ))}
+            </div>
+          )}
+
+          {/* Error banner — still show fallback links below */}
+          {!loading && error && (
+            <p className="text-sm text-slate-500 mb-4">{error}</p>
+          )}
+
+          {/* Flight cards */}
+          {!loading && flights.length > 0 && (
+            <div className="space-y-3">
+              {flights.map(flight => (
+                <div
+                  key={flight.id}
+                  className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+                >
+                  {/* Flight info */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      {flight.airline.logo && !flight.airline.logo.startsWith("http") ? (
+                        <span className="text-xl">{flight.airline.logo}</span>
+                      ) : flight.airline.logo ? (
+                        <img
+                          src={flight.airline.logo}
+                          alt={flight.airline.name}
+                          className="h-6 w-6 object-contain"
+                        />
+                      ) : null}
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-slate-900 truncate">{flight.airline.name}</p>
+                        <p className="text-xs text-slate-400">
+                          {flight.stops === 0 ? "Direct" : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="text-center px-2">
+                      <p className="text-sm font-semibold text-slate-800 whitespace-nowrap">
+                        {flight.departureTime} → {flight.arrivalTime}
+                      </p>
+                      <p className="text-xs text-slate-400">{fmtDuration(flight.durationMinutes)}</p>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <p className="text-lg font-bold text-sky-600">
+                        ${flight.price.toFixed(0)}
+                      </p>
+                      <p className="text-xs text-slate-400">per person</p>
+                    </div>
+                  </div>
+
+                  {/* Booking buttons */}
+                  <div className="flex gap-2">
+                    {affiliateLinks.map(link => (
+                      <a
+                        key={link.id}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 rounded-lg border border-slate-200 py-2 text-center
+                                   text-xs font-semibold text-slate-700 hover:bg-slate-50
+                                   hover:border-sky-300 hover:text-sky-700 transition-colors"
+                      >
+                        {link.name} ↗
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* No results — fallback to plain deep-link cards */}
+          {!loading && flights.length === 0 && (
+            <div className="space-y-3">
+              {affiliateLinks.map(link => (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between rounded-xl border border-slate-200
+                             bg-white px-5 py-4 shadow-sm hover:shadow-md hover:border-sky-300 transition-all"
+                >
+                  <div>
+                    <p className="font-semibold text-slate-900">{link.name}</p>
+                    <p className="text-sm text-slate-500 mt-0.5">{link.description}</p>
+                  </div>
+                  <span className="text-sky-600 text-sm font-medium">Search flights ↗</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

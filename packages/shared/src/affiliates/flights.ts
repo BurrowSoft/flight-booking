@@ -88,9 +88,8 @@ const AFFILIATES: Array<FlightAffiliateLink & {
     name: "Trip.com",
     description: "Compare hundreds of airlines worldwide",
     url: "",
-    // Disabled: Trip.com changed their URL structure — all path-based deep links
-    // now return 404. Re-enable when they provide a working affiliate URL format.
-    showFor: () => false,
+    // Path-based URLs (/flights/JFK-BKK/tickets-...) return 404 — use query-string format instead.
+    showFor: ({ from, to }) => isAsianRoute(from, to),
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
       const tcFrom = toTripComCode(from);
@@ -103,11 +102,10 @@ const AFFILIATES: Array<FlightAffiliateLink & {
         adult: String(adults),
         Allianceid: "8495775",
         SID: "316966000",
-        trip_sub1: "",
         trip_sub3: "D17566096",
         ...(returnDate ? { rdate: returnDate } : {}),
       });
-      return `https://www.trip.com/flights/${tcFrom}-${tcTo}/tickets-${tcFrom}-${tcTo}?${params}`;
+      return `https://www.trip.com/flights/?${params}`;
     },
   },
   {

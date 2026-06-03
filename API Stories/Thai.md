@@ -57,3 +57,19 @@ Copy `packages/shared/` to: hotel-booking, news-feed, rent-a-car, main-website, 
 - Muslim-friendly travel brand — relevant for TH south, MY, ID markets
 - Once approved: add script/widget injection in `TravelpayoutsScript.tsx` or a new `IkhlasScript.tsx` following the same `useLocale()` + `useEffect` pattern as TODO6
 - Relevant for hotel-booking too (halal-friendly accommodation)
+
+---
+
+## Nok Air deep-link CTA (no affiliate needed)
+No affiliate program required — just a redirect button in flight results.
+
+When origin or destination is a Thai airport (BKK, DMK, HKT, CNX, USM, HDY, KBV):
+```ts
+{
+  name: "Nok Air",
+  buildUrl: (params) =>
+    `https://www.nokair.com/en/flight/search?from=${params.origin}&to=${params.destination}&departDate=${params.departureDate}&adult=${params.passengers}&type=OW`,
+}
+```
+
+Add alongside the AirAsia CTA in the Thai airport affiliate link block. No tracking params needed.

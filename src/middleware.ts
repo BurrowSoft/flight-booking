@@ -2,12 +2,14 @@
 
 const VALID_LOCALES = ["en","th","es","ru","pt-BR","fr","ja","zh","zh-TW","ar","de","id","ko","it","vi"] as const;
 
+// locale → ISO country (for dev mode locale codes like ?dev=1&country=th)
 const LOCALE_TO_COUNTRY: Record<string, string> = {
   th: "TH", es: "ES", ru: "RU", "pt-BR": "BR", fr: "FR",
   ja: "JP", zh: "CN", "zh-TW": "TW", ar: "SA", de: "DE",
   id: "ID", ko: "KR", it: "IT", vi: "VN", en: "US",
 };
 
+// ISO country → locale (for first-visit auto-detection + dev mode country codes)
 const COUNTRY_LOCALE: Record<string, string> = {
   TH: "th",
   ES: "es", MX: "es", AR: "es", CO: "es", CL: "es", PE: "es", VE: "es",
@@ -31,7 +33,6 @@ const COUNTRY_LOCALE: Record<string, string> = {
 
 function patchCookieLocale(req: NextRequest, locale: string): Headers {
   const reqHeaders = new Headers(req.headers);
-  // Patch Cookie header so server components read new locale immediately (same request)
   const existing = req.headers.get("cookie") ?? "";
   const filtered = existing.split(";").filter(c => !c.trim().startsWith("NEXT_LOCALE="));
   filtered.push(`NEXT_LOCALE=${locale}`);
@@ -42,21 +43,31 @@ function patchCookieLocale(req: NextRequest, locale: string): Headers {
 export function middleware(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
-  // Dev mode: ?dev=1&country=th — takes effect on THIS request, no refresh needed
+  // Dev mode: ?dev=1&country=XX — accepts locale codes (th, es, ja...)
+  // OR ISO country codes (TH, FI, PL, GB, US...) for testing geo-gated widgets
   if (searchParams.get("dev") === "1") {
-    const devLocale = searchParams.get("country") as string;
-    if (devLocale && (VALID_LOCALES as readonly string[]).includes(devLocale)) {
-      const devCountry = LOCALE_TO_COUNTRY[devLocale] ?? "US";
-      const reqHeaders = patchCookieLocale(req, devLocale);
-      reqHeaders.set("x-vercel-ip-country", devCountry);
+    const devParam = searchParams.get("country");
+    if (devParam) {
+      const isLocale = (VALID_LOCALES as readonly string[]).includes(devParam);
+      const asCountryCode = devParam.toUpperCase();
 
-      const res = NextResponse.next({ request: { headers: reqHeaders } });
-      res.cookies.set("NEXT_LOCALE", devLocale, {
-        maxAge: 60 * 60 * 24 * 365,
-        path: "/",
-        sameSite: "lax",
-      });
-      return res;
+      if (isLocale) {
+        // e.g. ?dev=1&country=th → locale=th, geo=TH
+        const devCountry = LOCALE_TO_COUNTRY[devParam] ?? "US";
+        const reqHeaders = patchCookieLocale(req, devParam);
+        reqHeaders.set("x-burrowsoft-geo", devCountry);
+        const res = NextResponse.next({ request: { headers: reqHeaders } });
+        res.cookies.set("NEXT_LOCALE", devParam, { maxAge: 60 * 60 * 24 * 365, path: "/", sameSite: "lax" });
+        return res;
+      } else if (/^[A-Z]{2}$/.test(asCountryCode)) {
+        // e.g. ?dev=1&country=FI → geo=FI, locale from COUNTRY_LOCALE (or "en")
+        const devLocale = COUNTRY_LOCALE[asCountryCode] ?? "en";
+        const reqHeaders = patchCookieLocale(req, devLocale);
+        reqHeaders.set("x-burrowsoft-geo", asCountryCode);
+        const res = NextResponse.next({ request: { headers: reqHeaders } });
+        res.cookies.set("NEXT_LOCALE", devLocale, { maxAge: 60 * 60 * 24 * 365, path: "/", sameSite: "lax" });
+        return res;
+      }
     }
   }
 

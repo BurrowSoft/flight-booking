@@ -89,14 +89,15 @@ const AFFILIATES: Array<FlightAffiliateLink & {
     description: "Compare hundreds of airlines worldwide",
     url: "",
     // Path-based URLs (/flights/JFK-BKK/tickets-...) return 404 — use query-string format instead.
-    showFor: ({ from, to }) => isAsianRoute(from, to),
+    showFor: () => true,
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
+      const tcFrom = toTripComCode(from);
       const tcTo = toTripComCode(to);
-      // Don't include dcity — Trip.com's dcity lookup fails for Western airports (JFK, LAX, etc).
-      // User will see destination pre-filled, origin field empty. Better UX than half-filled form.
+      // dcity fills correctly for Asian airports; may be blank for Western airports (JFK etc) — acceptable
       const params = new URLSearchParams({
         flighttype: tripType,
+        dcity: tcFrom,
         acity: tcTo,
         ddate: date,
         adult: String(adults),

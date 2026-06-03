@@ -3,8 +3,6 @@ export interface FlightAffiliateLink {
   name: string;
   description: string;
   url: string;
-  /** ISO country codes this link is shown for, or "all" */
-  countries: string[] | "all";
 }
 
 interface FlightSearchParams {
@@ -13,20 +11,57 @@ interface FlightSearchParams {
   date: string;         // YYYY-MM-DD departure
   returnDate?: string;  // YYYY-MM-DD return — omit for one-way
   adults: number;
-  country: string;      // ISO-3166-1 visitor country for gating
+  country: string;      // ISO-3166-1 visitor country (unused for now, kept for future use)
+}
+
+// Major Asian airport IATA codes — Trip.com has real inventory for these routes
+const ASIAN_AIRPORTS = new Set([
+  // Thailand
+  "BKK","DMK","HKT","CNX","HDY","UTP","CEI","NST","KBV","UBP","LOE","KKC","HHQ",
+  // Singapore
+  "SIN",
+  // Malaysia
+  "KUL","PEN","BKI","LGK","KBR","JHB",
+  // Indonesia
+  "CGK","DPS","SUB","UPG","MES","BPN","PKU",
+  // Philippines
+  "MNL","CEB","DVO","ILO","CRK",
+  // Vietnam
+  "SGN","HAN","DAD","HPH","CXR","PQC","VCA",
+  // Cambodia / Laos / Myanmar
+  "REP","PNH","KOS","RGN","MDL","VTE","LPQ",
+  // Japan
+  "NRT","HND","KIX","NGO","CTS","FUK","OKA","ITM",
+  // South Korea
+  "ICN","GMP","PUS","CJU",
+  // China
+  "PEK","PKX","PVG","SHA","CAN","SZX","CTU","CKG","WUH","XMN","CSX","HGH","KMG","URC","HAK",
+  // Taiwan / Hong Kong / Macau
+  "TPE","KHH","TSA","HKG","MFM",
+  // India
+  "BOM","DEL","MAA","BLR","CCU","HYD","AMD","GOI","COK","TRV","PAT","LKO","IXC","ATQ","BBI",
+  // Sri Lanka / Bangladesh / Nepal / Pakistan
+  "CMB","DAC","CGP","KTM","KHI","LHE","ISB","PEW",
+]);
+
+// Show Trip.com only when the route involves an Asian airport
+function isAsianRoute(from: string, to: string): boolean {
+  return ASIAN_AIRPORTS.has(from.toUpperCase()) || ASIAN_AIRPORTS.has(to.toUpperCase());
 }
 
 // ── Affiliate configs ──────────────────────────────────────────────────────────
 
-const AFFILIATES: Array<Omit<FlightAffiliateLink, "url"> & {
+const AFFILIATES: Array<FlightAffiliateLink & {
+  showFor: (p: FlightSearchParams) => boolean;
   buildUrl: (p: FlightSearchParams) => string;
 }> = [
   {
     id: "tripcom",
     name: "Trip.com",
     description: "Compare hundreds of airlines worldwide",
-    // Trip.com inventory is Asia-centric — thin/no results for EU/US routes
-    countries: ["CN","JP","KR","SG","TH","TW","HK","MY","ID","PH","VN","IN","MO","MM","KH","LA","BN","MV","LK","NP","BD","PK"],
+    url: "",
+    // Only show when the route involves Asia — Trip.com has thin inventory elsewhere
+    showFor: ({ from, to }) => isAsianRoute(from, to),
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
       const params = new URLSearchParams({
@@ -48,10 +83,10 @@ const AFFILIATES: Array<Omit<FlightAffiliateLink, "url"> & {
     id: "expedia",
     name: "Expedia",
     description: "Book flights with free cancellation options",
-    countries: "all",
+    url: "",
+    showFor: () => true,
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const isRoundtrip = !!returnDate;
-      // Expedia leg format: "from:{IATA},to:{IATA},departure:M/D/YYYYTANYT"
       const toExpediaDate = (iso: string) => {
         const [y, m, d] = iso.split("-");
         return `${parseInt(m!)}/${parseInt(d!)}/${y}`;
@@ -71,8 +106,6 @@ const AFFILIATES: Array<Omit<FlightAffiliateLink, "url"> & {
         d1: date,
         passengers: `children:0,adults:${adults},seniors:0,infantinlap:Y`,
         options: "cabinclass:economy",
-        // PHG/Partnerize affiliate credentials — AU program (flight-specific)
-        // Update affcid/clickref/afflid/affdtl if you switch to a different regional program
         clickref: "1011lDafjZ8I",
         affcid: "AU.DIRECT.PHG.1011l432356.1100l86802",
         ref_id: "1011lDafjZ8I",
@@ -85,12 +118,12 @@ const AFFILIATES: Array<Omit<FlightAffiliateLink, "url"> & {
   },
 
   // ── Country-specific partners (add future ones here) ──────────────────────
-  // Example structure for Brazil — wire up when Milhas affiliate is approved:
   // {
   //   id: "milhas",
   //   name: "123milhas",
   //   description: "Voos nacionais e internacionais",
-  //   countries: ["BR"],
+  //   url: "",
+  //   showFor: ({ country }) => country === "BR",
   //   buildUrl: ({ from, to, date }) =>
   //     `https://123milhas.com/v2/passagens/${from}/${to}/${date}/1/0/0/E?utm_source=burrowsoft`,
   // },
@@ -98,14 +131,10 @@ const AFFILIATES: Array<Omit<FlightAffiliateLink, "url"> & {
 
 // ── Public API ─────────────────────────────────────────────────────────────────
 
-/** Returns affiliate links visible to the visitor's country, with URLs pre-filled. */
 export function buildFlightAffiliateLinks(params: FlightSearchParams): FlightAffiliateLink[] {
   return AFFILIATES
-    .filter(a =>
-      a.countries === "all" ||
-      a.countries.includes(params.country)
-    )
-    .map(({ buildUrl, ...rest }) => ({
+    .filter(a => a.showFor(params))
+    .map(({ showFor, buildUrl, ...rest }) => ({
       ...rest,
       url: buildUrl(params),
     }));

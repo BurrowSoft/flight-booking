@@ -53,22 +53,16 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
       ...(returnDate ? { return: returnDate } : {}),
     });
 
-    const observer = new MutationObserver(() => {
-      if (container.children.length > 0) {
-        setKiwiLoaded(true);
-        observer.disconnect();
-      }
-    });
-    observer.observe(container, { childList: true, subtree: true });
-
     const script = document.createElement("script");
     script.async = true;
     script.charset = "utf-8";
     script.src = `https://tpscr.com/content?${params}`;
     container.appendChild(script);
 
+    const timer = setTimeout(() => setKiwiLoaded(true), 3000);
+
     return () => {
-      observer.disconnect();
+      clearTimeout(timer);
       container.innerHTML = "";
     };
   }, [from, to, date, returnDate, locale, currency]);

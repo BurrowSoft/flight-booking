@@ -1,4 +1,4 @@
-# TODO12: Flight — 3 fixes
+# TODO12: Flight — 4 fixes
 
 ## Permissions
 Run with: `claude --dangerously-skip-permissions`
@@ -116,11 +116,70 @@ No app-level code change needed — just commit the updated shared file.
 
 ---
 
+## Fix 4 — Sort bar for Other Results
+
+**Problem:** Hotels have a sort control but flights don't. Add client-side sorting
+to the "Other Results" flight list.
+
+**File:** `src/components/FlightResultsView.tsx`
+
+Add sort state:
+```ts
+type SortKey = "price" | "duration" | "departure" | "stops";
+const [sortBy, setSortBy] = useState<SortKey>("price");
+```
+
+Add a sort bar rendered above the flight cards (only when `flights.length > 0`):
+
+```tsx
+{!loading && flights.length > 0 && (
+  <div className="flex items-center gap-2 mb-3 flex-wrap">
+    <span className="text-xs text-slate-500 font-medium">Sort by:</span>
+    {(["price", "duration", "departure", "stops"] as SortKey[]).map(key => (
+      <button
+        key={key}
+        onClick={() => setSortBy(key)}
+        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors
+          ${sortBy === key
+            ? "bg-sky-600 text-white"
+            : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+      >
+        {key === "price" ? "Cheapest" :
+         key === "duration" ? "Shortest" :
+         key === "departure" ? "Earliest" :
+         "Fewest stops"}
+      </button>
+    ))}
+  </div>
+)}
+```
+
+Sort the flights array before rendering:
+
+```ts
+const sortedFlights = [...flights].sort((a, b) => {
+  switch (sortBy) {
+    case "price":    return a.price.amount - b.price.amount;
+    case "duration": return a.durationMinutes - b.durationMinutes;
+    case "stops":    return a.stops - b.stops;
+    case "departure":
+      return a.departureTime.localeCompare(b.departureTime);
+    default: return 0;
+  }
+});
+```
+
+Use `sortedFlights` instead of `flights` when rendering cards. Reset sort to
+`"price"` whenever a new fetch completes (add `setSortBy("price")` after
+`setFlights(data.flights ?? [])`).
+
+---
+
 ## Commit and push
 
 ```bash
 git add -A
-git commit -m "fix: flight currency per locale, spinner on tab, Trip.com airport codes"
+git commit -m "fix: flight currency, spinner on tab, Trip.com codes, sort bar"
 git push origin master
 vercel deploy --prod --yes --scope burrowsoft
 ```

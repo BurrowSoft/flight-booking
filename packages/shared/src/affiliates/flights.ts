@@ -25,7 +25,8 @@ const AFFILIATES: Array<Omit<FlightAffiliateLink, "url"> & {
     id: "tripcom",
     name: "Trip.com",
     description: "Compare hundreds of airlines worldwide",
-    countries: "all",
+    // Trip.com inventory is Asia-centric — thin/no results for EU/US routes
+    countries: ["CN","JP","KR","SG","TH","TW","HK","MY","ID","PH","VN","IN","MO","MM","KH","LA","BN","MV","LK","NP","BD","PK"],
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
       const params = new URLSearchParams({

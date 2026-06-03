@@ -31,7 +31,7 @@ export function mapSharedFlight(f: SharedFlight, cabin: CabinClass): Flight {
     airline: {
       code: airlineCode,
       name: f.airline || airlineCode,
-      logo: AIRLINE_LOGOS[airlineCode] ?? "✈️",
+      logo: f.airlineLogo ?? AIRLINE_LOGOS[airlineCode] ?? "✈️",
     },
     flightNumber: f.flightNumber || `${airlineCode}???`,
     origin: {

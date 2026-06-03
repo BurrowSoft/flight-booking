@@ -11,9 +11,11 @@ interface Props {
   adults: number;
   locale: string;
   country: string;
+  currency: string;
 }
 
 type Mode = "kiwi" | "other";
+type SortKey = "price" | "duration" | "departure" | "stops";
 
 // Matches the shape returned by /api/flights (after mapSharedFlight in route.ts)
 interface FlightResult {
@@ -41,7 +43,16 @@ const WIDGET_LOCALE: Record<string, string> = {
   ko: "ko", it: "it", vi: "vi",
 };
 
-export function FlightResultsView({ from, to, date, returnDate, adults, locale, country }: Props) {
+function Spinner() {
+  return (
+    <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+    </svg>
+  );
+}
+
+export function FlightResultsView({ from, to, date, returnDate, adults, locale, country, currency }: Props) {
   const [mode, setMode] = useState<Mode>("kiwi");
   const containerRef = useRef<HTMLDivElement>(null);
   const [kiwiLoaded, setKiwiLoaded] = useState(false);
@@ -50,13 +61,14 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
   const [flights, setFlights] = useState<FlightResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<SortKey>("price");
 
-  // Reset kiwi skeleton whenever mode switches back to kiwi
+  // Reset kiwi state when mode switches back to kiwi
   useEffect(() => {
     if (mode === "kiwi") setKiwiLoaded(false);
   }, [mode]);
 
-  // Kiwi widget
+  // Kiwi widget injection
   useEffect(() => {
     if (mode !== "kiwi") return;
     const container = containerRef.current;
@@ -72,7 +84,7 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
       promo_id: "4478",
       show_header: "true",
       limit: "3",
-      currency: "usd",
+      currency: currency.toLowerCase(),
       primary_color: "00AE98",
       results_background_color: "FFFFFF",
       form_background_color: "FFFFFF",
@@ -102,7 +114,7 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
       observer.disconnect();
       container.innerHTML = "";
     };
-  }, [mode, from, to, date, returnDate, locale]);
+  }, [mode, from, to, date, returnDate, locale, currency]);
 
   // Fetch real flights for "other" mode
   useEffect(() => {
@@ -114,7 +126,7 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
       from, to, date,
       adults: String(adults),
       cabin: "economy",
-      currency: "USD",
+      currency,
       country,
       ...(returnDate ? { return: returnDate } : {}),
     });
@@ -123,50 +135,54 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
       .then(r => r.json())
       .then((data: { flights?: FlightResult[] }) => {
         setFlights(data.flights ?? []);
+        setSortBy("price");
         setLoading(false);
       })
       .catch(() => {
         setError("Could not load flights. Try the links below.");
         setLoading(false);
       });
-  }, [mode, from, to, date, returnDate, adults, country]);
+  }, [mode, from, to, date, returnDate, adults, country, currency]);
 
   const affiliateLinks = buildFlightAffiliateLinks({ from, to, date, returnDate, adults, country });
 
+  const sortedFlights = [...flights].sort((a, b) => {
+    switch (sortBy) {
+      case "price":    return a.price - b.price;
+      case "duration": return a.durationMinutes - b.durationMinutes;
+      case "stops":    return a.stops - b.stops;
+      case "departure": return a.departureTime.localeCompare(b.departureTime);
+      default: return 0;
+    }
+  });
+
   return (
     <div>
-      {/* Mode toggle */}
+      {/* Mode toggle with spinner on active loading button */}
       <div className="flex gap-2 mb-6">
-        {(["kiwi", "other"] as Mode[]).map((m) => (
-          <button
-            key={m}
-            onClick={() => setMode(m)}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-              mode === m
-                ? "bg-sky-600 text-white shadow-sm"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            {m === "kiwi" ? "Kiwi Results" : "Other Results"}
-          </button>
-        ))}
+        {(["kiwi", "other"] as Mode[]).map((m) => {
+          const isActive = m === mode;
+          const isLoading = (m === "kiwi" && !kiwiLoaded) || (m === "other" && loading);
+          return (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+                isActive
+                  ? "bg-sky-600 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {isActive && isLoading && <Spinner />}
+              {m === "kiwi" ? "Kiwi Results" : "Other Results"}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Kiwi widget — always keeps containerRef mounted so script can inject */}
+      {/* Kiwi widget — kept mounted so script can inject */}
       <div className={mode === "kiwi" ? "block" : "hidden"}>
-        <div className="relative">
-          {!kiwiLoaded && mode === "kiwi" && (
-            <div className="absolute inset-0 space-y-3 p-1 z-10 bg-white">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-28 rounded-xl bg-slate-100 animate-pulse" />
-              ))}
-              <p className="text-center text-xs text-slate-400 pt-2">
-                Searching flights via Kiwi...
-              </p>
-            </div>
-          )}
-          <div ref={containerRef} className="w-full min-h-[400px]" />
-        </div>
+        <div ref={containerRef} className="w-full min-h-[400px]" />
       </div>
 
       {/* Other Results */}
@@ -181,76 +197,92 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
             </div>
           )}
 
-          {/* Error banner — still show fallback links below */}
+          {/* Error banner */}
           {!loading && error && (
             <p className="text-sm text-slate-500 mb-4">{error}</p>
           )}
 
-          {/* Flight cards */}
-          {!loading && flights.length > 0 && (
-            <div className="space-y-3">
-              {flights.map(flight => (
-                <div
-                  key={flight.id}
-                  className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-                >
-                  {/* Flight info */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      {flight.airline.logo && !flight.airline.logo.startsWith("http") ? (
-                        <span className="text-xl">{flight.airline.logo}</span>
-                      ) : flight.airline.logo ? (
-                        <img
-                          src={flight.airline.logo}
-                          alt={flight.airline.name}
-                          className="h-6 w-6 object-contain"
-                        />
-                      ) : null}
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-slate-900 truncate">{flight.airline.name}</p>
-                        <p className="text-xs text-slate-400">
-                          {flight.stops === 0 ? "Direct" : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`}
+          {/* Sort bar + flight cards */}
+          {!loading && sortedFlights.length > 0 && (
+            <>
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <span className="text-xs text-slate-500 font-medium">Sort by:</span>
+                {(["price", "duration", "departure", "stops"] as SortKey[]).map(key => (
+                  <button
+                    key={key}
+                    onClick={() => setSortBy(key)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                      sortBy === key
+                        ? "bg-sky-600 text-white"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {key === "price" ? "Cheapest" :
+                     key === "duration" ? "Shortest" :
+                     key === "departure" ? "Earliest" :
+                     "Fewest stops"}
+                  </button>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                {sortedFlights.map(flight => (
+                  <div
+                    key={flight.id}
+                    className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {flight.airline.logo && !flight.airline.logo.startsWith("http") ? (
+                          <span className="text-xl">{flight.airline.logo}</span>
+                        ) : flight.airline.logo ? (
+                          <img src={flight.airline.logo} alt={flight.airline.name} className="h-6 w-6 object-contain" />
+                        ) : null}
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-slate-900 truncate">{flight.airline.name}</p>
+                          <p className="text-xs text-slate-400">
+                            {flight.stops === 0 ? "Direct" : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-center px-2">
+                        <p className="text-sm font-semibold text-slate-800 whitespace-nowrap">
+                          {flight.departureTime} → {flight.arrivalTime}
                         </p>
+                        <p className="text-xs text-slate-400">{fmtDuration(flight.durationMinutes)}</p>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <p className="text-lg font-bold text-sky-600">
+                          {flight.currency !== "USD" ? flight.currency + " " : "$"}{flight.price.toFixed(0)}
+                        </p>
+                        <p className="text-xs text-slate-400">per person</p>
                       </div>
                     </div>
 
-                    <div className="text-center px-2">
-                      <p className="text-sm font-semibold text-slate-800 whitespace-nowrap">
-                        {flight.departureTime} → {flight.arrivalTime}
-                      </p>
-                      <p className="text-xs text-slate-400">{fmtDuration(flight.durationMinutes)}</p>
-                    </div>
-
-                    <div className="text-right shrink-0">
-                      <p className="text-lg font-bold text-sky-600">
-                        ${flight.price.toFixed(0)}
-                      </p>
-                      <p className="text-xs text-slate-400">per person</p>
+                    <div className="flex gap-2">
+                      {affiliateLinks.map(link => (
+                        <a
+                          key={link.id}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 rounded-lg border border-slate-200 py-2 text-center
+                                     text-xs font-semibold text-slate-700 hover:bg-slate-50
+                                     hover:border-sky-300 hover:text-sky-700 transition-colors"
+                        >
+                          {link.name} ↗
+                        </a>
+                      ))}
                     </div>
                   </div>
-
-                  {/* Booking buttons */}
-                  <div className="flex gap-2">
-                    {affiliateLinks.map(link => (
-                      <a
-                        key={link.id}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 rounded-lg border border-slate-200 py-2 text-center
-                                   text-xs font-semibold text-slate-700 hover:bg-slate-50
-                                   hover:border-sky-300 hover:text-sky-700 transition-colors"
-                      >
-                        {link.name} ↗
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           )}
 
-          {/* No results — fallback to plain deep-link cards */}
+          {/* No results fallback */}
           {!loading && flights.length === 0 && (
             <div className="space-y-3">
               {affiliateLinks.map(link => (

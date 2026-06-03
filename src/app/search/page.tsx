@@ -6,7 +6,7 @@ import { FlightResultsView } from "@/components/FlightResultsView";
 import { AIRPORTS } from "@/lib/data";
 import { buildSearchMetadata } from "@/lib/seo";
 import type { CabinClass } from "@/lib/types";
-import { detectCountry } from "@burrowsoft/shared";
+import { detectCountry, getCurrencyForCountry } from "@burrowsoft/shared";
 import { getLocale } from "next-intl/server";
 
 interface SearchPageProps {
@@ -37,6 +37,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const hdrs = await headers();
   const country = detectCountry(Object.fromEntries(hdrs.entries()));
   const locale = await getLocale();
+  const currency = locale === "th" ? "THB" : getCurrencyForCountry(country);
 
   const originCode = (params.from ?? "JFK").toUpperCase();
   const destinationCode = (params.to ?? "LHR").toUpperCase();
@@ -82,6 +83,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         adults={adults}
         locale={locale}
         country={country}
+        currency={currency}
       />
     </div>
   );

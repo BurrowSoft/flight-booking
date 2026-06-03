@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
 import { FlightSearchForm } from "@/components/FlightSearchForm";
 import { FlightResults } from "@/components/FlightResults";
 import { AIRPORTS } from "@/lib/data";
 import { buildSearchMetadata } from "@/lib/seo";
 import type { CabinClass } from "@/lib/types";
 import { detectCountry, getCurrencyForCountry, createFlightRouter } from "@burrowsoft/shared";
+import { getLocale } from "next-intl/server";
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -35,7 +35,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const hdrs = await headers();
   const country = detectCountry(Object.fromEntries(hdrs.entries()));
-  const currency = getCurrencyForCountry(country);
+  const locale = await getLocale();
+  // Match the layout's currency logic: Thai locale always uses THB regardless of IP country
+  const currency = locale === "th" ? "THB" : getCurrencyForCountry(country);
 
   const originCode = (params.from ?? "JFK").toUpperCase();
   const destinationCode = (params.to ?? "LHR").toUpperCase();
@@ -49,7 +51,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   // Resolve active provider names server-side so the client overlay knows what to show
   const router = createFlightRouter();
   const providerNames = router.getProvidersForCountry(country).map((p: { name: string }) => p.name);
-  const t = await getTranslations("results");
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">

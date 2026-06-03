@@ -11,6 +11,7 @@ import { getCurrencyForCountry } from "@/lib/currency";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
 import { LanguageSelector, RegionalFloatingAd } from "@burrowsoft/shared";
 import { detectCountry } from "@burrowsoft/shared";
+import { TravelpayoutsScript } from "@/components/TravelpayoutsScript";
 import "./globals.css";
 
 const sarabun = Sarabun({
@@ -203,6 +204,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               </p>
             </div>
           </footer>
+          <TravelpayoutsScript />
           <RegionalFloatingAd />
           <Analytics />
         </NextIntlClientProvider>

@@ -1,0 +1,29 @@
+{
+  "nav": { "home": "FlyMole", "popularRoutes": "Популярные маршруты", "deals": "Акции" },
+  "hero": {
+    "title": "Сравните рейсы. Без уловок.",
+    "subtitle": "Найдите самые дешёвые авиабилеты у ведущих авиакомпаний и сервисов бронирования."
+  },
+  "search": {
+    "from": "Откуда", "to": "Куда", "departure": "Вылет", "return": "Обратно (необязательно)",
+    "passengers": "Пассажиры", "search": "Найти рейсы", "oneWay": "В одну сторону", "roundTrip": "Туда и обратно"
+  },
+  "results": {
+    "found": "Найдено {count} рейсов",
+    "noneFound": "Рейсы по этому маршруту не найдены",
+    "noneFoundHint": "Попробуйте другие аэропорты или даты",
+    "pricesAsOf": "Цены на {time}", "refresh": "обновить",
+    "providers": "Найдено у {n} поставщиков",
+    "bookOn": "Забронировать на {provider}", "alsoOn": "Также на {provider}",
+    "compareOptions": "Сравнить варианты",
+    "stops": "{n} пересадки", "direct": "Прямой",
+    "loading": "Загрузка рейсов с {provider}…",
+    "unavailable": "{provider} недоступен",
+    "findingFlights": "Ищем лучшие рейсы…",
+    "fetchingPrices": "Обновляем цены…"
+  },
+  "footer": {
+    "tagline": "Сравнивайте сотни авиакомпаний за секунды. Без скрытых сборов.",
+    "copyright": "© {year} BurrowSoft. Все права защищены."
+  }
+}

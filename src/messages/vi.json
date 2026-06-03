@@ -1,0 +1,29 @@
+{
+  "nav": { "home": "FlyMole", "popularRoutes": "Tuyến đường phổ biến", "deals": "Ưu đãi" },
+  "hero": {
+    "title": "So sánh chuyến bay. Không mánh khóe.",
+    "subtitle": "Tìm vé máy bay rẻ nhất từ các hãng hàng không và trang đặt vé hàng đầu."
+  },
+  "search": {
+    "from": "Từ", "to": "Đến", "departure": "Ngày đi", "return": "Ngày về (tùy chọn)",
+    "passengers": "Hành khách", "search": "Tìm kiếm chuyến bay", "oneWay": "Một chiều", "roundTrip": "Khứ hồi"
+  },
+  "results": {
+    "found": "Tìm thấy {count} chuyến bay",
+    "noneFound": "Không tìm thấy chuyến bay cho tuyến này",
+    "noneFoundHint": "Thử sân bay hoặc ngày khác",
+    "pricesAsOf": "Giá tại {time}", "refresh": "làm mới",
+    "providers": "Tìm thấy trên {n} nhà cung cấp",
+    "bookOn": "Đặt vé tại {provider}", "alsoOn": "Cũng có tại {provider}",
+    "compareOptions": "So sánh lựa chọn",
+    "stops": "{n} điểm dừng", "direct": "Bay thẳng",
+    "loading": "Đang tải chuyến bay từ {provider}…",
+    "unavailable": "{provider} không khả dụng",
+    "findingFlights": "Đang tìm chuyến bay tốt nhất…",
+    "fetchingPrices": "Đang cập nhật giá…"
+  },
+  "footer": {
+    "tagline": "So sánh hàng trăm hãng hàng không trong vài giây. Không phí ẩn.",
+    "copyright": "© {year} BurrowSoft. Đã đăng ký bản quyền."
+  }
+}

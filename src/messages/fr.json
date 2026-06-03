@@ -1,0 +1,29 @@
+{
+  "nav": { "home": "FlyMole", "popularRoutes": "Itinéraires populaires", "deals": "Bons plans" },
+  "hero": {
+    "title": "Comparez les vols. Sans artifice.",
+    "subtitle": "Trouvez les vols les moins chers auprès des meilleures compagnies aériennes et sites de réservation."
+  },
+  "search": {
+    "from": "Depuis", "to": "Vers", "departure": "Départ", "return": "Retour (optionnel)",
+    "passengers": "Passagers", "search": "Rechercher des vols", "oneWay": "Aller simple", "roundTrip": "Aller-retour"
+  },
+  "results": {
+    "found": "{count} vols trouvés",
+    "noneFound": "Aucun vol trouvé pour cet itinéraire",
+    "noneFoundHint": "Essayez d'autres aéroports ou dates",
+    "pricesAsOf": "Prix au {time}", "refresh": "actualiser",
+    "providers": "Trouvé chez {n} prestataires",
+    "bookOn": "Réserver sur {provider}", "alsoOn": "Aussi sur {provider}",
+    "compareOptions": "Comparer les options",
+    "stops": "{n} escale(s)", "direct": "Direct",
+    "loading": "Chargement des vols depuis {provider}…",
+    "unavailable": "{provider} indisponible",
+    "findingFlights": "Recherche des meilleurs vols…",
+    "fetchingPrices": "Mise à jour des prix…"
+  },
+  "footer": {
+    "tagline": "Comparez des centaines de compagnies en quelques secondes. Sans frais cachés.",
+    "copyright": "© {year} BurrowSoft. Tous droits réservés."
+  }
+}

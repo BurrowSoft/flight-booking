@@ -1,0 +1,29 @@
+{
+  "nav": { "home": "FlyMole", "popularRoutes": "Beliebte Routen", "deals": "Angebote" },
+  "hero": {
+    "title": "Flüge vergleichen. Keine Tricks.",
+    "subtitle": "Finden Sie die günstigsten Flüge bei den besten Airlines und Buchungsseiten."
+  },
+  "search": {
+    "from": "Von", "to": "Nach", "departure": "Abflug", "return": "Rückflug (optional)",
+    "passengers": "Passagiere", "search": "Flüge suchen", "oneWay": "Nur Hinflug", "roundTrip": "Hin- und Rückflug"
+  },
+  "results": {
+    "found": "{count} Flüge gefunden",
+    "noneFound": "Keine Flüge für diese Strecke gefunden",
+    "noneFoundHint": "Versuchen Sie andere Flughäfen oder Daten",
+    "pricesAsOf": "Preise vom {time}", "refresh": "aktualisieren",
+    "providers": "Bei {n} Anbietern gefunden",
+    "bookOn": "Buchen bei {provider}", "alsoOn": "Auch bei {provider}",
+    "compareOptions": "Optionen vergleichen",
+    "stops": "{n} Zwischenstopp(s)", "direct": "Direktflug",
+    "loading": "Flüge von {provider} werden geladen…",
+    "unavailable": "{provider} nicht verfügbar",
+    "findingFlights": "Beste Flüge werden gesucht…",
+    "fetchingPrices": "Aktuelle Preise werden abgerufen…"
+  },
+  "footer": {
+    "tagline": "Hunderte Airlines in Sekunden vergleichen. Ohne versteckte Gebühren.",
+    "copyright": "© {year} BurrowSoft. Alle Rechte vorbehalten."
+  }
+}

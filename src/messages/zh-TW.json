@@ -1,0 +1,29 @@
+{
+  "nav": { "home": "FlyMole", "popularRoutes": "熱門路線", "deals": "優惠" },
+  "hero": {
+    "title": "比較機票，無套路。",
+    "subtitle": "從頂級航空公司和訂票網站找到最低價機票。"
+  },
+  "search": {
+    "from": "出發地", "to": "目的地", "departure": "出發日期", "return": "回程（可選）",
+    "passengers": "乘客", "search": "搜尋機票", "oneWay": "單程", "roundTrip": "來回"
+  },
+  "results": {
+    "found": "找到 {count} 個航班",
+    "noneFound": "未找到此路線的航班",
+    "noneFoundHint": "請嘗試其他機場或日期",
+    "pricesAsOf": "{time}的價格", "refresh": "重新整理",
+    "providers": "在 {n} 個平台找到",
+    "bookOn": "在 {provider} 訂票", "alsoOn": "也可在 {provider} 訂票",
+    "compareOptions": "比較選項",
+    "stops": "{n}次轉機", "direct": "直飛",
+    "loading": "正在從 {provider} 載入航班…",
+    "unavailable": "{provider} 暫不可用",
+    "findingFlights": "正在搜尋最優航班…",
+    "fetchingPrices": "正在取得最新價格…"
+  },
+  "footer": {
+    "tagline": "秒速比較數百家航空公司。無隱藏費用。",
+    "copyright": "© {year} BurrowSoft 版權所有。"
+  }
+}

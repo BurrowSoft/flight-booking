@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { getCachedFlightEditorial } from "@/lib/editorial";
 import { FlightList } from "@/components/FlightList";
 import { Price } from "@/components/Price";
 import { AdUnit } from "@/components/AdUnit";
@@ -46,6 +47,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
   if (!origin || !destination) notFound();
 
   const today = new Date().toISOString().split("T")[0] ?? "";
+  const editorial = await getCachedFlightEditorial(origin.city, destination.city);
   const flights = generateFlights(codes.origin, codes.destination, today);
   const minPrice = routeData?.minPrice ?? Math.min(...flights.map((f) => f.price));
 
@@ -142,6 +144,15 @@ export default async function RoutePage({ params }: RoutePageProps) {
             <p>{[...new Set(flights.map((f) => f.airline.name))].join(", ")} and more operate this route.</p>
           </div>
         </section>
+
+        {editorial && (
+          <section className="mt-8 max-w-2xl mx-auto px-4 py-6 text-slate-700 text-sm leading-relaxed">
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">
+              About flights from {origin.city} to {destination.city}
+            </h2>
+            <p>{editorial}</p>
+          </section>
+        )}
 
         {relatedRoutes.length > 0 && (
           <section className="mt-10" aria-labelledby="related-heading">

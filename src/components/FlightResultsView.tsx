@@ -242,7 +242,7 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
                         {flight.airline.logo && !flight.airline.logo.startsWith("http") ? (
                           <span className="text-xl">{flight.airline.logo}</span>
                         ) : flight.airline.logo ? (
-                          <img src={flight.airline.logo} alt={flight.airline.name} className="h-6 w-6 object-contain" />
+                          <img src={flight.airline.logo} alt={`${flight.airline.name} airline logo`} className="h-6 w-6 object-contain" />
                         ) : null}
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-slate-900 truncate">{flight.airline.name}</p>

@@ -134,14 +134,8 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
     fetch(`/api/flights?${params}`)
       .then(r => r.json())
       .then((data: { flights?: FlightResult[] }) => {
-        const results = data.flights ?? [];
-        if (results.length === 0) {
-          // No API results — switch to Kiwi widget which has broader coverage
-          setMode("kiwi");
-        } else {
-          setFlights(results);
-          setSortBy("price");
-        }
+        setFlights(data.flights ?? []);
+        setSortBy("price");
         setLoading(false);
       })
       .catch(() => {

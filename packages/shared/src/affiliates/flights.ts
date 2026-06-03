@@ -17,7 +17,7 @@ interface FlightSearchParams {
 // Major Asian airport IATA codes — Trip.com has real inventory for these routes
 const ASIAN_AIRPORTS = new Set([
   // Thailand
-  "BKK","DMK","HKT","CNX","HDY","UTP","CEI","NST","KBV","UBP","LOE","KKC","HHQ",
+  "BKK","DMK","HKT","CNX","HDY","UTP","CEI","NST","KBV","UBP","LOE","KKC","HHQ","NAN",
   // Singapore
   "SIN",
   // Malaysia
@@ -92,11 +92,11 @@ const AFFILIATES: Array<FlightAffiliateLink & {
     showFor: ({ from, to }) => isAsianRoute(from, to),
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
-      const tcFrom = toTripComCode(from);
       const tcTo = toTripComCode(to);
+      // Don't include dcity — Trip.com's dcity lookup fails for Western airports (JFK, LAX, etc).
+      // User will see destination pre-filled, origin field empty. Better UX than half-filled form.
       const params = new URLSearchParams({
         flighttype: tripType,
-        dcity: tcFrom,
         acity: tcTo,
         ddate: date,
         adult: String(adults),

@@ -49,6 +49,34 @@ function isAsianRoute(from: string, to: string): boolean {
   return ASIAN_AIRPORTS.has(from.toUpperCase()) || ASIAN_AIRPORTS.has(to.toUpperCase());
 }
 
+// Trip.com uses primary city-airport codes — map secondary airports to their city hub
+const TRIP_COM_CODE: Record<string, string> = {
+  // Bangkok — DMK (Don Mueang) → BKK (Suvarnabhumi)
+  DMK: "BKK",
+  // London secondary airports → Heathrow
+  LGW: "LHR", LCY: "LHR", STN: "LHR", LTN: "LHR", SEN: "LHR",
+  // New York — EWR/LGA → JFK
+  EWR: "JFK", LGA: "JFK",
+  // Paris — Orly → CDG
+  ORY: "CDG",
+  // Milan secondary → MXP
+  BGY: "MXP", LIN: "MXP",
+  // Rome — Ciampino → FCO
+  CIA: "FCO",
+  // Tokyo — NRT and HND both work but map HND → NRT for consistency
+  HND: "NRT",
+  // Osaka — ITM → KIX
+  ITM: "KIX",
+  // Kuala Lumpur — SZB → KUL
+  SZB: "KUL",
+  // Jakarta — HLP → CGK
+  HLP: "CGK",
+};
+
+function toTripComCode(iata: string): string {
+  return TRIP_COM_CODE[iata.toUpperCase()] ?? iata.toUpperCase();
+}
+
 // ── Affiliate configs ──────────────────────────────────────────────────────────
 
 const AFFILIATES: Array<FlightAffiliateLink & {
@@ -64,10 +92,12 @@ const AFFILIATES: Array<FlightAffiliateLink & {
     showFor: ({ from, to }) => isAsianRoute(from, to),
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
+      const tcFrom = toTripComCode(from);
+      const tcTo = toTripComCode(to);
       const params = new URLSearchParams({
         flighttype: tripType,
-        dcity: from,
-        acity: to,
+        dcity: tcFrom,
+        acity: tcTo,
         ddate: date,
         adult: String(adults),
         Allianceid: "8495775",
@@ -76,7 +106,7 @@ const AFFILIATES: Array<FlightAffiliateLink & {
         trip_sub3: "D17566096",
         ...(returnDate ? { rdate: returnDate } : {}),
       });
-      return `https://www.trip.com/flights/${from}-${to}/tickets-${from}-${to}?${params}`;
+      return `https://www.trip.com/flights/${tcFrom}-${tcTo}/tickets-${tcFrom}-${tcTo}?${params}`;
     },
   },
   {

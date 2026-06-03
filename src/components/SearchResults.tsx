@@ -18,7 +18,7 @@ export function SearchResults({ flights, originCity, destinationCity, date }: Pr
   const fmt = useFormatPrice();
   const [sortBy, setSortBy] = useState<SortOption>("price");
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
-  const [maxPrice, setMaxPrice] = useState<number>(9999);
+  const [maxPrice, setMaxPrice] = useState<number>(Infinity);
   const [directOnly, setDirectOnly] = useState(false);
   const [selectedAirlines, setSelectedAirlines] = useState<Set<string>>(new Set());
 
@@ -126,7 +126,7 @@ export function SearchResults({ flights, originCity, destinationCity, date }: Pr
           {/* Reset */}
           <button
             onClick={() => {
-              setMaxPrice(9999);
+              setMaxPrice(Infinity);
               setDirectOnly(false);
               setSelectedAirlines(new Set());
             }}

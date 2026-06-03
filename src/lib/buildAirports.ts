@@ -26,24 +26,58 @@ function extractCity(name: string): string {
 }
 
 const CITY_OVERRIDES: Record<string, string> = {
+  // USA
   JFK: "New York", LGA: "New York", EWR: "Newark",
-  LHR: "London", LGW: "London", STN: "London", LTN: "London", LCY: "London",
+  LAX: "Los Angeles", BUR: "Los Angeles", LGB: "Los Angeles", ONT: "Los Angeles",
   ORD: "Chicago", MDW: "Chicago",
+  DFW: "Dallas", DAL: "Dallas",
+  SFO: "San Francisco", OAK: "San Francisco", SJC: "San Francisco",
+  MIA: "Miami", FLL: "Miami",
+  IAD: "Washington DC", DCA: "Washington DC", BWI: "Washington DC",
+  // Europe
+  LHR: "London", LGW: "London", STN: "London", LTN: "London", LCY: "London",
   CDG: "Paris", ORY: "Paris",
+  MXP: "Milan", LIN: "Milan", BGY: "Milan",
+  FCO: "Rome", CIA: "Rome",
+  MAD: "Madrid",
+  BCN: "Barcelona",
+  IST: "Istanbul", SAW: "Istanbul",
+  ARN: "Stockholm", BMA: "Stockholm", NYO: "Stockholm",
+  OSL: "Oslo", TRF: "Oslo",
+  CPH: "Copenhagen",
+  HEL: "Helsinki",
+  BRU: "Brussels", CRL: "Brussels",
+  VIE: "Vienna",
+  ZRH: "Zurich",
+  ATH: "Athens",
+  LIS: "Lisbon",
+  PRG: "Prague",
+  BUD: "Budapest",
+  WAW: "Warsaw", WMI: "Warsaw",
+  // Russia / CIS
+  SVO: "Moscow", DME: "Moscow", VKO: "Moscow",
+  // East Asia
   NRT: "Tokyo", HND: "Tokyo",
+  KIX: "Osaka", ITM: "Osaka",
   PVG: "Shanghai", SHA: "Shanghai",
   PEK: "Beijing", PKX: "Beijing",
-  SVO: "Moscow", DME: "Moscow", VKO: "Moscow",
+  ICN: "Seoul", GMP: "Seoul",
+  TPE: "Taipei", TSA: "Taipei",
+  HKG: "Hong Kong",
+  // Southeast Asia
+  BKK: "Bangkok", DMK: "Bangkok",
+  KUL: "Kuala Lumpur", SZB: "Kuala Lumpur",
+  CGK: "Jakarta", HLP: "Jakarta",
+  DXB: "Dubai", DWC: "Dubai",
+  // South Asia
+  DEL: "Delhi",
+  BOM: "Mumbai",
+  // Latin America
   GRU: "São Paulo", CGH: "São Paulo",
   GIG: "Rio de Janeiro", SDU: "Rio de Janeiro",
   EZE: "Buenos Aires", AEP: "Buenos Aires",
   YYZ: "Toronto", YTZ: "Toronto",
-  LAX: "Los Angeles", BUR: "Los Angeles",
-  DXB: "Dubai", DWC: "Dubai",
-  IST: "Istanbul", SAW: "Istanbul",
-  KUL: "Kuala Lumpur", SZB: "Kuala Lumpur",
-  BKK: "Bangkok", DMK: "Bangkok",
-  ICN: "Seoul", GMP: "Seoul",
+  MEX: "Mexico City",
 };
 
 const SIZE_RANK: Record<string, number> = { large: 3, medium: 2, small: 1 };

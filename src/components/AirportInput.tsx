@@ -3,10 +3,23 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { AIRPORTS } from "@/lib/data";
 
+// Primary airport for each multi-airport city — shown first in results
+const PRIMARY_AIRPORT = new Set([
+  "JFK","LHR","CDG","NRT","PVG","PEK","SVO","GRU","EZE","YYZ","LAX","SFO",
+  "DXB","IST","KUL","BKK","ICN","TPE","KIX","MXP","FCO","ARN","OSL","CPH",
+  "HEL","BRU","VIE","ZRH","ATH","LIS","PRG","BUD","WAW","MAD","BCN","MEX",
+  "GIG","DEL","BOM","CGK","HKG","ORD","DFW","IAD","MIA","HND","GMP","DMK",
+]);
+
 const ALL_AIRPORTS = Object.values(AIRPORTS)
-  // Drop entries where the name starts with "?" — corrupt data from the airports package
   .filter((a) => !a.name.startsWith("?") && !a.city.startsWith("?"))
-  .sort((a, b) => a.city.localeCompare(b.city));
+  .sort((a, b) => {
+    // Primary airports first, then alphabetical by city
+    const aPrimary = PRIMARY_AIRPORT.has(a.code) ? 0 : 1;
+    const bPrimary = PRIMARY_AIRPORT.has(b.code) ? 0 : 1;
+    if (aPrimary !== bPrimary) return aPrimary - bPrimary;
+    return a.city.localeCompare(b.city);
+  });
 
 // Curated popular airports shown when the query is empty
 const POPULAR_CODES = [

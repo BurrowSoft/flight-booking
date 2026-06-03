@@ -44,17 +44,24 @@ const WIDGET_LOCALE: Record<string, string> = {
 export function FlightResultsView({ from, to, date, returnDate, adults, locale, country }: Props) {
   const [mode, setMode] = useState<Mode>("kiwi");
   const containerRef = useRef<HTMLDivElement>(null);
+  const [kiwiLoaded, setKiwiLoaded] = useState(false);
 
   // "other" mode state
   const [flights, setFlights] = useState<FlightResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Reset kiwi skeleton whenever mode switches back to kiwi
+  useEffect(() => {
+    if (mode === "kiwi") setKiwiLoaded(false);
+  }, [mode]);
+
   // Kiwi widget
   useEffect(() => {
     if (mode !== "kiwi") return;
     const container = containerRef.current;
     if (!container) return;
+    setKiwiLoaded(false);
     container.innerHTML = "";
 
     const params = new URLSearchParams({
@@ -77,13 +84,24 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
       ...(returnDate ? { return: returnDate } : {}),
     });
 
+    const observer = new MutationObserver(() => {
+      if (container.children.length > 0) {
+        setKiwiLoaded(true);
+        observer.disconnect();
+      }
+    });
+    observer.observe(container, { childList: true, subtree: true });
+
     const script = document.createElement("script");
     script.async = true;
     script.charset = "utf-8";
     script.src = `https://tpscr.com/content?${params}`;
     container.appendChild(script);
 
-    return () => { container.innerHTML = ""; };
+    return () => {
+      observer.disconnect();
+      container.innerHTML = "";
+    };
   }, [mode, from, to, date, returnDate, locale]);
 
   // Fetch real flights for "other" mode
@@ -134,10 +152,22 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
         ))}
       </div>
 
-      {/* Kiwi widget */}
-      {mode === "kiwi" && (
-        <div ref={containerRef} className="w-full min-h-[400px]" />
-      )}
+      {/* Kiwi widget — always keeps containerRef mounted so script can inject */}
+      <div className={mode === "kiwi" ? "block" : "hidden"}>
+        <div className="relative">
+          {!kiwiLoaded && mode === "kiwi" && (
+            <div className="absolute inset-0 space-y-3 p-1 z-10 bg-white">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-28 rounded-xl bg-slate-100 animate-pulse" />
+              ))}
+              <p className="text-center text-xs text-slate-400 pt-2">
+                Searching flights via Kiwi...
+              </p>
+            </div>
+          )}
+          <div ref={containerRef} className="w-full min-h-[400px]" />
+        </div>
+      </div>
 
       {/* Other Results */}
       {mode === "other" && (

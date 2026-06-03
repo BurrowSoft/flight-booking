@@ -12,3 +12,6 @@ export * from "./providers";
 
 // UI components (LanguageSelector, etc.)
 export * from "./components";
+
+// Affiliate link builders
+export * from "./affiliates/flights";

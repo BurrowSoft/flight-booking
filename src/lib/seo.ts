@@ -60,12 +60,12 @@ export function websiteJsonLd() {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/search?from={origin}&to={destination}&date={departureDate}`,
+        urlTemplate: `${SITE_URL}/search?from={origin_airport}&to={destination_airport}&date={departure_date}`,
       },
       "query-input": [
-        "required name=origin",
-        "required name=destination",
-        "required name=departureDate",
+        "required name=origin_airport",
+        "required name=destination_airport",
+        "required name=departure_date",
       ],
     },
   };

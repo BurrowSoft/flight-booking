@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { FlightSearchForm } from "@/components/FlightSearchForm";
@@ -6,6 +7,7 @@ import { Price } from "@/components/Price";
 import { AdUnit } from "@/components/AdUnit";
 import { POPULAR_ROUTES } from "@/lib/data";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/seo";
+import { detectOriginAirport } from "@/lib/detectOriginAirport";
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} — Compare & Book Cheap Flights`,
@@ -30,6 +32,11 @@ const features = [
 export default async function HomePage() {
   const t = await getTranslations("hero");
   const featuredRoutes = POPULAR_ROUTES.slice(0, 8);
+  const hdrs = await headers();
+  const originCode = detectOriginAirport(
+    hdrs.get("x-vercel-ip-city"),
+    hdrs.get("x-vercel-ip-country")
+  );
 
   return (
     <>
@@ -40,7 +47,7 @@ export default async function HomePage() {
             {t("title")}
           </h1>
           <p className="mb-10 text-lg text-sky-100 sm:text-xl">{t("subtitle")}</p>
-          <FlightSearchForm />
+          <FlightSearchForm initialFrom={originCode || undefined} />
         </div>
       </section>
 

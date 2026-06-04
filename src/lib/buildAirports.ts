@@ -100,6 +100,7 @@ export function buildAirports(): Record<string, Airport> {
       country: countryName(raw.iso ?? ""),
       continent: CONTINENT[raw.continent ?? ""] ?? raw.continent ?? "",
       isPrimary: raw.size === "large",
+      isoCountry: (raw.iso ?? "").toUpperCase(),
     };
   }
 

@@ -5,6 +5,7 @@ export interface Airport {
   country: string;
   continent: string;
   isPrimary: boolean; // true = large airport (main hub for the city)
+  isoCountry: string; // ISO 3166-1 alpha-2 e.g. "TH", "US"
 }
 
 export interface Airline {

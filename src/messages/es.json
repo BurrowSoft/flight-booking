@@ -1,22 +1,35 @@
 {
-  "nav": { "home": "FlyMole", "popularRoutes": "Rutas populares", "deals": "Ofertas" },
+  "nav": {
+    "home": "FlyMole",
+    "popularRoutes": "Rutas populares",
+    "deals": "Ofertas"
+  },
   "hero": {
     "title": "Compara vuelos. Sin trucos.",
     "subtitle": "Encuentra los vuelos más baratos de las mejores aerolíneas y sitios de reserva."
   },
   "search": {
-    "from": "Desde", "to": "Hasta", "departure": "Salida", "return": "Regreso (opcional)",
-    "passengers": "Pasajeros", "search": "Buscar vuelos", "oneWay": "Solo ida", "roundTrip": "Ida y vuelta"
+    "from": "Desde",
+    "to": "Hasta",
+    "departure": "Salida",
+    "return": "Regreso (opcional)",
+    "passengers": "Pasajeros",
+    "search": "Buscar vuelos",
+    "oneWay": "Solo ida",
+    "roundTrip": "Ida y vuelta"
   },
   "results": {
     "found": "{count} vuelos encontrados",
     "noneFound": "No se encontraron vuelos para esta ruta",
     "noneFoundHint": "Intenta con otros aeropuertos o fechas",
-    "pricesAsOf": "Precios a las {time}", "refresh": "actualizar",
+    "pricesAsOf": "Precios a las {time}",
+    "refresh": "actualizar",
     "providers": "Encontrado en {n} proveedores",
-    "bookOn": "Reservar en {provider}", "alsoOn": "También en {provider}",
+    "bookOn": "Reservar en {provider}",
+    "alsoOn": "También en {provider}",
     "compareOptions": "Comparar opciones",
-    "stops": "{n} escala(s)", "direct": "Directo",
+    "stops": "{n} escala(s)",
+    "direct": "Directo",
     "loading": "Cargando vuelos de {provider}…",
     "unavailable": "{provider} no disponible",
     "findingFlights": "Buscando los mejores vuelos…",
@@ -25,5 +38,8 @@
   "footer": {
     "tagline": "Compara cientos de aerolíneas en segundos. Sin cargos ocultos.",
     "copyright": "© {year} BurrowSoft. Todos los derechos reservados."
+  },
+  "noAds": {
+    "tagline": "Búsqueda limpia. Sin anuncios. Sin registro."
   }
 }

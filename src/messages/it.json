@@ -1,22 +1,35 @@
 {
-  "nav": { "home": "FlyMole", "popularRoutes": "Rotte popolari", "deals": "Offerte" },
+  "nav": {
+    "home": "FlyMole",
+    "popularRoutes": "Rotte popolari",
+    "deals": "Offerte"
+  },
   "hero": {
     "title": "Confronta i voli. Senza trucchi.",
     "subtitle": "Trova i voli più economici dalle migliori compagnie aeree e siti di prenotazione."
   },
   "search": {
-    "from": "Da", "to": "A", "departure": "Partenza", "return": "Ritorno (opzionale)",
-    "passengers": "Passeggeri", "search": "Cerca voli", "oneWay": "Solo andata", "roundTrip": "Andata e ritorno"
+    "from": "Da",
+    "to": "A",
+    "departure": "Partenza",
+    "return": "Ritorno (opzionale)",
+    "passengers": "Passeggeri",
+    "search": "Cerca voli",
+    "oneWay": "Solo andata",
+    "roundTrip": "Andata e ritorno"
   },
   "results": {
     "found": "{count} voli trovati",
     "noneFound": "Nessun volo trovato per questa rotta",
     "noneFoundHint": "Prova altri aeroporti o date",
-    "pricesAsOf": "Prezzi alle {time}", "refresh": "aggiorna",
+    "pricesAsOf": "Prezzi alle {time}",
+    "refresh": "aggiorna",
     "providers": "Trovato su {n} provider",
-    "bookOn": "Prenota su {provider}", "alsoOn": "Anche su {provider}",
+    "bookOn": "Prenota su {provider}",
+    "alsoOn": "Anche su {provider}",
     "compareOptions": "Confronta opzioni",
-    "stops": "{n} scalo(i)", "direct": "Diretto",
+    "stops": "{n} scalo(i)",
+    "direct": "Diretto",
     "loading": "Caricamento voli da {provider}…",
     "unavailable": "{provider} non disponibile",
     "findingFlights": "Ricerca dei migliori voli…",
@@ -25,5 +38,8 @@
   "footer": {
     "tagline": "Confronta centinaia di compagnie in pochi secondi. Senza costi nascosti.",
     "copyright": "© {year} BurrowSoft. Tutti i diritti riservati."
+  },
+  "noAds": {
+    "tagline": "Ricerca pulita. Zero pubblicità. Zero registrazione."
   }
 }

@@ -1,22 +1,35 @@
 {
-  "nav": { "home": "FlyMole", "popularRoutes": "热门路线", "deals": "优惠" },
+  "nav": {
+    "home": "FlyMole",
+    "popularRoutes": "热门路线",
+    "deals": "优惠"
+  },
   "hero": {
     "title": "比较机票，无套路。",
     "subtitle": "从顶级航空公司和订票网站找到最低价机票。"
   },
   "search": {
-    "from": "出发地", "to": "目的地", "departure": "出发日期", "return": "返程（可选）",
-    "passengers": "乘客", "search": "搜索机票", "oneWay": "单程", "roundTrip": "往返"
+    "from": "出发地",
+    "to": "目的地",
+    "departure": "出发日期",
+    "return": "返程（可选）",
+    "passengers": "乘客",
+    "search": "搜索机票",
+    "oneWay": "单程",
+    "roundTrip": "往返"
   },
   "results": {
     "found": "找到 {count} 个航班",
     "noneFound": "未找到此路线的航班",
     "noneFoundHint": "请尝试其他机场或日期",
-    "pricesAsOf": "{time}的价格", "refresh": "刷新",
+    "pricesAsOf": "{time}的价格",
+    "refresh": "刷新",
     "providers": "在 {n} 个平台找到",
-    "bookOn": "在 {provider} 预订", "alsoOn": "也可在 {provider} 预订",
+    "bookOn": "在 {provider} 预订",
+    "alsoOn": "也可在 {provider} 预订",
     "compareOptions": "比较选项",
-    "stops": "{n}次中转", "direct": "直飞",
+    "stops": "{n}次中转",
+    "direct": "直飞",
     "loading": "正在从 {provider} 加载航班…",
     "unavailable": "{provider} 暂不可用",
     "findingFlights": "正在搜索最优航班…",
@@ -25,5 +38,8 @@
   "footer": {
     "tagline": "秒级比较数百家航空公司。无隐藏费用。",
     "copyright": "© {year} BurrowSoft 版权所有。"
+  },
+  "noAds": {
+    "tagline": "纯净搜索 · 无广告 · 无需注册"
   }
 }

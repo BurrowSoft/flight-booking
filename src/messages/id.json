@@ -1,22 +1,35 @@
 {
-  "nav": { "home": "FlyMole", "popularRoutes": "Rute Populer", "deals": "Penawaran" },
+  "nav": {
+    "home": "FlyMole",
+    "popularRoutes": "Rute Populer",
+    "deals": "Penawaran"
+  },
   "hero": {
     "title": "Bandingkan Penerbangan. Tanpa Trik.",
     "subtitle": "Temukan penerbangan termurah dari maskapai dan situs pemesanan terbaik."
   },
   "search": {
-    "from": "Dari", "to": "Ke", "departure": "Keberangkatan", "return": "Kepulangan (opsional)",
-    "passengers": "Penumpang", "search": "Cari Penerbangan", "oneWay": "Sekali jalan", "roundTrip": "Pulang pergi"
+    "from": "Dari",
+    "to": "Ke",
+    "departure": "Keberangkatan",
+    "return": "Kepulangan (opsional)",
+    "passengers": "Penumpang",
+    "search": "Cari Penerbangan",
+    "oneWay": "Sekali jalan",
+    "roundTrip": "Pulang pergi"
   },
   "results": {
     "found": "Ditemukan {count} penerbangan",
     "noneFound": "Tidak ada penerbangan untuk rute ini",
     "noneFoundHint": "Coba bandara atau tanggal yang berbeda",
-    "pricesAsOf": "Harga per {time}", "refresh": "perbarui",
+    "pricesAsOf": "Harga per {time}",
+    "refresh": "perbarui",
     "providers": "Ditemukan di {n} penyedia",
-    "bookOn": "Pesan di {provider}", "alsoOn": "Juga di {provider}",
+    "bookOn": "Pesan di {provider}",
+    "alsoOn": "Juga di {provider}",
     "compareOptions": "Bandingkan pilihan",
-    "stops": "{n} transit", "direct": "Langsung",
+    "stops": "{n} transit",
+    "direct": "Langsung",
     "loading": "Memuat penerbangan dari {provider}…",
     "unavailable": "{provider} tidak tersedia",
     "findingFlights": "Mencari penerbangan terbaik…",
@@ -25,5 +38,8 @@
   "footer": {
     "tagline": "Bandingkan ratusan maskapai dalam hitungan detik. Tanpa biaya tersembunyi.",
     "copyright": "© {year} BurrowSoft. Hak cipta dilindungi."
+  },
+  "noAds": {
+    "tagline": "Pencarian bersih. Tanpa iklan. Tanpa daftar."
   }
 }

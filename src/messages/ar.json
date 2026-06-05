@@ -1,22 +1,35 @@
 {
-  "nav": { "home": "FlyMole", "popularRoutes": "الوجهات الشائعة", "deals": "العروض" },
+  "nav": {
+    "home": "FlyMole",
+    "popularRoutes": "الوجهات الشائعة",
+    "deals": "العروض"
+  },
   "hero": {
     "title": "قارن الرحلات. بدون حيل.",
     "subtitle": "ابحث عن أرخص الرحلات الجوية من أفضل شركات الطيران ومواقع الحجز."
   },
   "search": {
-    "from": "من", "to": "إلى", "departure": "المغادرة", "return": "العودة (اختياري)",
-    "passengers": "المسافرون", "search": "ابحث عن رحلات", "oneWay": "ذهاب فقط", "roundTrip": "ذهاب وإياب"
+    "from": "من",
+    "to": "إلى",
+    "departure": "المغادرة",
+    "return": "العودة (اختياري)",
+    "passengers": "المسافرون",
+    "search": "ابحث عن رحلات",
+    "oneWay": "ذهاب فقط",
+    "roundTrip": "ذهاب وإياب"
   },
   "results": {
     "found": "تم العثور على {count} رحلة",
     "noneFound": "لم يتم العثور على رحلات لهذا المسار",
     "noneFoundHint": "جرّب مطارات أو تواريخ مختلفة",
-    "pricesAsOf": "الأسعار اعتباراً من {time}", "refresh": "تحديث",
+    "pricesAsOf": "الأسعار اعتباراً من {time}",
+    "refresh": "تحديث",
     "providers": "وجدت في {n} مزودين",
-    "bookOn": "احجز عبر {provider}", "alsoOn": "أيضاً عبر {provider}",
+    "bookOn": "احجز عبر {provider}",
+    "alsoOn": "أيضاً عبر {provider}",
     "compareOptions": "مقارنة الخيارات",
-    "stops": "{n} توقفات", "direct": "مباشر",
+    "stops": "{n} توقفات",
+    "direct": "مباشر",
     "loading": "جارٍ تحميل الرحلات من {provider}…",
     "unavailable": "{provider} غير متوفر",
     "findingFlights": "جارٍ البحث عن أفضل الرحلات…",
@@ -25,5 +38,8 @@
   "footer": {
     "tagline": "قارن مئات شركات الطيران في ثوانٍ. بدون رسوم مخفية.",
     "copyright": "© {year} BurrowSoft. جميع الحقوق محفوظة."
+  },
+  "noAds": {
+    "tagline": "بحث نظيف. بلا إعلانات. بلا تسجيل."
   }
 }

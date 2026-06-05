@@ -1,22 +1,35 @@
 {
-  "nav": { "home": "FlyMole", "popularRoutes": "인기 노선", "deals": "특가" },
+  "nav": {
+    "home": "FlyMole",
+    "popularRoutes": "인기 노선",
+    "deals": "특가"
+  },
   "hero": {
     "title": "항공권 비교. 꼼수 없이.",
     "subtitle": "주요 항공사와 예약 사이트에서 가장 저렴한 항공권을 찾아보세요."
   },
   "search": {
-    "from": "출발지", "to": "목적지", "departure": "출발일", "return": "귀환일 (선택)",
-    "passengers": "탑승객", "search": "항공권 검색", "oneWay": "편도", "roundTrip": "왕복"
+    "from": "출발지",
+    "to": "목적지",
+    "departure": "출발일",
+    "return": "귀환일 (선택)",
+    "passengers": "탑승객",
+    "search": "항공권 검색",
+    "oneWay": "편도",
+    "roundTrip": "왕복"
   },
   "results": {
     "found": "{count}편 항공권 찾음",
     "noneFound": "해당 노선의 항공편을 찾을 수 없습니다",
     "noneFoundHint": "다른 공항이나 날짜를 시도해 보세요",
-    "pricesAsOf": "{time} 기준 가격", "refresh": "새로고침",
+    "pricesAsOf": "{time} 기준 가격",
+    "refresh": "새로고침",
     "providers": "{n}개 제공사에서 찾음",
-    "bookOn": "{provider}에서 예약", "alsoOn": "{provider}에서도 예약 가능",
+    "bookOn": "{provider}에서 예약",
+    "alsoOn": "{provider}에서도 예약 가능",
     "compareOptions": "옵션 비교",
-    "stops": "{n}회 경유", "direct": "직항",
+    "stops": "{n}회 경유",
+    "direct": "직항",
     "loading": "{provider}에서 항공편 불러오는 중…",
     "unavailable": "{provider} 이용 불가",
     "findingFlights": "최저가 항공편 검색 중…",
@@ -25,5 +38,8 @@
   "footer": {
     "tagline": "수백 개 항공사를 초 단위로 비교. 숨겨진 수수료 없음.",
     "copyright": "© {year} BurrowSoft. All rights reserved."
+  },
+  "noAds": {
+    "tagline": "깔끔한 검색 · 광고 없음 · 가입 불필요"
   }
 }

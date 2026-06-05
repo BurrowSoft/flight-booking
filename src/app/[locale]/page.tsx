@@ -11,7 +11,7 @@ import { detectOriginAirport } from "@/lib/detectOriginAirport";
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} — Compare & Book Cheap Flights`,
-  description: SITE_DESCRIPTION,
+  description: `Clean Search. No Ads. No Sign-Up. — ${SITE_DESCRIPTION}`,
   alternates: { canonical: SITE_URL },
 };
 
@@ -31,6 +31,7 @@ const features = [
 
 export default async function HomePage() {
   const t = await getTranslations("hero");
+  const tNoAds = await getTranslations("noAds");
   const featuredRoutes = POPULAR_ROUTES.slice(0, 8);
   const hdrs = await headers();
   const originCode = detectOriginAirport(
@@ -43,9 +44,12 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 pb-24 pt-16" aria-labelledby="hero-heading">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.04\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
         <div className="relative mx-auto max-w-5xl px-4 text-center">
-          <h1 id="hero-heading" className="mb-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
+          <h1 id="hero-heading" className="mb-2 text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
             {t("title")}
           </h1>
+          <p className="mb-3 text-base font-semibold tracking-wide text-amber-400">
+            {tNoAds("tagline")}
+          </p>
           <p className="mb-10 text-lg text-sky-100 sm:text-xl">{t("subtitle")}</p>
           <FlightSearchForm initialFrom={originCode || undefined} />
         </div>

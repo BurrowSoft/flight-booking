@@ -38,5 +38,8 @@
   "footer": {
     "tagline": "Compare hundreds of airlines in seconds. No hidden fees.",
     "copyright": "© {year} BurrowSoft. All rights reserved."
+  },
+  "noAds": {
+    "tagline": "Clean Search. No Ads. No Sign-Up."
   }
 }

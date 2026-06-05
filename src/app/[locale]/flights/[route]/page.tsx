@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 import { getCachedFlightEditorial } from "@/lib/editorial";
 import { FlightList } from "@/components/FlightList";
 import { Price } from "@/components/Price";
-import { AdUnit } from "@/components/AdUnit";
 import { generateFlights, POPULAR_ROUTES, AIRPORTS, routeSlugToParams } from "@/lib/data";
 import {
   buildFlightRouteMetadata,
@@ -126,7 +125,6 @@ export default async function RoutePage({ params }: RoutePageProps) {
           <FlightList flights={flights} />
         </section>
 
-        <AdUnit slot="ROUTE_MID_SLOT" format="horizontal" className="mt-8" />
 
         <section className="mt-12 prose prose-slate max-w-none" aria-labelledby="route-info-heading">
           <h2 id="route-info-heading" className="text-xl font-bold text-slate-900">

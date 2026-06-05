@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import type { Flight, SortOption } from "@/lib/types";
 import { FlightCard } from "./FlightCard";
 import { BookingModal } from "./BookingModal";
-import { AdUnit } from "./AdUnit";
 import { useFormatPrice } from "./CurrencyProvider";
 
 interface Props {
@@ -176,14 +175,8 @@ export function SearchResults({ flights, originCity, destinationCity, date }: Pr
           </div>
         ) : (
           <div className="space-y-3">
-            {sorted.map((flight, i) => (
-              <>
-                <FlightCard key={flight.id} flight={flight} onSelect={setSelectedFlight} />
-                {/* Ad unit after the 3rd result — high visibility, low disruption */}
-                {i === 2 && (
-                  <AdUnit key="ad-mid" slot="SEARCH_MID_SLOT" format="horizontal" className="rounded-xl border border-slate-100 bg-white" />
-                )}
-              </>
+            {sorted.map((flight) => (
+              <FlightCard key={flight.id} flight={flight} onSelect={setSelectedFlight} />
             ))}
           </div>
         )}

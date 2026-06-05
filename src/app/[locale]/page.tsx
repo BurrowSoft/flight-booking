@@ -4,7 +4,6 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { FlightSearchForm } from "@/components/FlightSearchForm";
 import { Price } from "@/components/Price";
-import { AdUnit } from "@/components/AdUnit";
 import { POPULAR_ROUTES } from "@/lib/data";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/seo";
 import { detectOriginAirport } from "@/lib/detectOriginAirport";
@@ -94,9 +93,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-5xl px-4 py-2">
-        <AdUnit slot="HOME_BANNER_SLOT" format="horizontal" />
-      </div>
 
       <section className="bg-white py-14" aria-labelledby="features-heading">
         <div className="mx-auto max-w-7xl px-4">

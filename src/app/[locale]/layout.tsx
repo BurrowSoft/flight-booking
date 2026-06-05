@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import Image from "next/image";
 import { headers } from "next/headers";
 import {
   Sarabun,
@@ -143,9 +144,16 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3" aria-label="Main navigation">
-              <Link href="/" className="flex items-center gap-2 font-bold text-sky-600 text-xl">
-                <span aria-hidden>✈</span>
-                {t("home")}
+              <Link href="/" className="flex items-center gap-2.5">
+                <Image
+                  src="/mascot.svg"
+                  alt={SITE_NAME}
+                  width={36}
+                  height={36}
+                  className="shrink-0"
+                  priority
+                />
+                <span className="text-lg font-bold tracking-tight">{SITE_NAME}</span>
               </Link>
               <div className="flex items-center gap-4">
                 <div className="hidden sm:flex items-center gap-6 text-sm font-medium text-slate-600">

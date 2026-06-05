@@ -2,12 +2,12 @@ import Image from "next/image";
 
 export default function Loading() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+    <div className="flex items-center justify-center min-h-[60vh]">
       <Image
-        src="/mascot.svg"
+        src="/mascot.png"
         alt="Loading..."
-        width={72}
-        height={72}
+        width={80}
+        height={80}
         className="animate-pulse"
         priority
       />

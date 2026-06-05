@@ -146,10 +146,10 @@ export default async function LocaleLayout({
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3" aria-label="Main navigation">
               <Link href="/" className="flex items-center gap-2.5">
                 <Image
-                  src="/mascot.svg"
+                  src="/mascot.png"
                   alt={SITE_NAME}
-                  width={36}
-                  height={36}
+                  width={40}
+                  height={40}
                   className="shrink-0"
                   priority
                 />

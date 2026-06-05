@@ -19,7 +19,7 @@ export default async function OGImage() {
           gap: 40,
           width: "100%",
           height: "100%",
-          background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+          background: "linear-gradient(135deg, #0c4a6e 0%, #075985 100%)",
           fontFamily: "sans-serif",
         }}
       >
@@ -30,7 +30,7 @@ export default async function OGImage() {
             FlyMole
           </span>
           <span style={{ fontSize: 28, color: "#94a3b8" }}>
-            Clean Search. No Ads. No Sign-Up.
+            Search & Compare Cheap Flights
           </span>
         </div>
       </div>

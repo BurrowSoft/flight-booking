@@ -179,24 +179,40 @@ export function ArrowLeftIcon({ className = "h-4 w-4", ...props }: IconProps) {
   );
 }
 
-/** BurrowSoft brand icon — the mole silhouette. Use in footers and brand contexts. */
+/** BurrowSoft brand icon — peeking mole. Use in footers and brand contexts. */
 export function BurrowSoftIcon({ className = "h-5 w-5", ...props }: IconProps) {
   return (
     <svg
       className={className}
-      viewBox="0 0 200 200"
+      viewBox="0 0 24 24"
       fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       {...props}
     >
-      <ellipse cx="100" cy="115" rx="60" ry="55" fill="#1e293b" />
-      <ellipse cx="100" cy="100" rx="45" ry="45" fill="#334155" />
-      <ellipse cx="83" cy="95" rx="8" ry="10" fill="white" />
-      <ellipse cx="117" cy="95" rx="8" ry="10" fill="white" />
-      <circle cx="83" cy="96" r="4" fill="#0f172a" />
-      <circle cx="117" cy="96" r="4" fill="#0f172a" />
-      <rect x="50" y="150" width="100" height="20" rx="4" fill="#1e293b" />
+      {/* hair tuft */}
+      <line x1="12" y1="2.5" x2="11.5" y2="4" />
+      <line x1="12" y1="2.5" x2="12.5" y2="4" />
+      {/* head dome */}
+      <path d="M5.5 14 A6.5 6.5 0 0 1 18.5 14" />
+      {/* left eye ring */}
+      <circle cx="9" cy="11" r="2.2" />
+      <circle cx="9" cy="11" r="0.9" fill="currentColor" stroke="none" />
+      {/* right eye ring */}
+      <circle cx="15" cy="11" r="2.2" />
+      <circle cx="15" cy="11" r="0.9" fill="currentColor" stroke="none" />
+      {/* nose */}
+      <circle cx="12" cy="13.5" r="0.5" fill="currentColor" stroke="none" />
+      {/* ledge */}
+      <line x1="3" y1="15" x2="21" y2="15" />
+      {/* left paw */}
+      <path d="M7 15 C6.5 16 5.5 16.5 6 17.5 C7 17 7.5 17.5 8 17.5 C8.5 17.5 9 17 9 15" />
+      {/* right paw */}
+      <path d="M15 15 C14.5 16 13.5 16.5 14 17.5 C15 17 15.5 17.5 16 17.5 C16.5 17.5 17 17 17 15" />
     </svg>
   );
 }

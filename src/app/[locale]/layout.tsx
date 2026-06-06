@@ -55,8 +55,8 @@ export async function generateMetadata({
   return {
     metadataBase: new URL(SITE_URL),
     title: {
-      default: `Flight Search in ${countryName} — FlyMole`,
-      template: `%s | FlyMole`,
+      default: `Flight Search in ${countryName} — Fly Mole`,
+      template: `%s | Fly Mole`,
     },
     description: desc,
     keywords: ["cheap flights","book flights","compare flights","flight deals","airline tickets","cheap airline tickets","discount flights","last minute flights"],
@@ -67,13 +67,13 @@ export async function generateMetadata({
       locale: locale.replace("-", "_"),
       url: locale === "en" ? `${BASE}/` : `${BASE}/${locale}/`,
       siteName: SITE_NAME,
-      title: `Flight Search in ${countryName} — FlyMole`,
+      title: `Flight Search in ${countryName} — Fly Mole`,
       description: desc,
       images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "FlyMole" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: `Flight Search in ${countryName} — FlyMole`,
+      title: `Flight Search in ${countryName} — Fly Mole`,
       description: desc,
       images: ["/og-image.png"],
     },

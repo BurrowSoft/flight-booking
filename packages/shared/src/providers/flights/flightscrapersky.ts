@@ -152,7 +152,7 @@ export class FlightScraperSkyProvider implements FlightProvider {
 
     const nav = (place.navigation as Record<string, unknown>) ?? {};
     const result = {
-      skyId: String((place as Record<string, unknown>).skyId ?? (nav.relevantFlightParams as Record<string, unknown> | undefined)?.skyId ?? ""),
+      skyId: String((place.skyId as string) ?? nav.relevantFlightParams?.skyId ?? ""),
       entityId: String(nav.entityId ?? ""),
       city: String((place.presentation as Record<string, unknown>)?.subtitle ?? query),
       country: String((place.presentation as Record<string, unknown>)?.subtitle ?? ""),

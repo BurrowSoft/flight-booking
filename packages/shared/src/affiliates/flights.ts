@@ -14,6 +14,41 @@ interface FlightSearchParams {
   country: string;      // ISO-3166-1 visitor country (unused for now, kept for future use)
 }
 
+// Major Asian airport IATA codes — Trip.com has real inventory for these routes
+const ASIAN_AIRPORTS = new Set([
+  // Thailand
+  "BKK","DMK","HKT","CNX","HDY","UTP","CEI","NST","KBV","UBP","LOE","KKC","HHQ",
+  // Singapore
+  "SIN",
+  // Malaysia
+  "KUL","PEN","BKI","LGK","KBR","JHB",
+  // Indonesia
+  "CGK","DPS","SUB","UPG","MES","BPN","PKU",
+  // Philippines
+  "MNL","CEB","DVO","ILO","CRK",
+  // Vietnam
+  "SGN","HAN","DAD","HPH","CXR","PQC","VCA",
+  // Cambodia / Laos / Myanmar
+  "REP","PNH","KOS","RGN","MDL","VTE","LPQ",
+  // Japan
+  "NRT","HND","KIX","NGO","CTS","FUK","OKA","ITM",
+  // South Korea
+  "ICN","GMP","PUS","CJU",
+  // China
+  "PEK","PKX","PVG","SHA","CAN","SZX","CTU","CKG","WUH","XMN","CSX","HGH","KMG","URC","HAK",
+  // Taiwan / Hong Kong / Macau
+  "TPE","KHH","TSA","HKG","MFM",
+  // India
+  "BOM","DEL","MAA","BLR","CCU","HYD","AMD","GOI","COK","TRV","PAT","LKO","IXC","ATQ","BBI",
+  // Sri Lanka / Bangladesh / Nepal / Pakistan
+  "CMB","DAC","CGP","KTM","KHI","LHE","ISB","PEW",
+]);
+
+// Show Trip.com only when the route involves an Asian airport
+function isAsianRoute(from: string, to: string): boolean {
+  return ASIAN_AIRPORTS.has(from.toUpperCase()) || ASIAN_AIRPORTS.has(to.toUpperCase());
+}
+
 // Trip.com uses primary city-airport codes — map secondary airports to their city hub
 const TRIP_COM_CODE: Record<string, string> = {
   // Bangkok — DMK (Don Mueang) → BKK (Suvarnabhumi)
@@ -53,22 +88,25 @@ const AFFILIATES: Array<FlightAffiliateLink & {
     name: "Trip.com",
     description: "Compare hundreds of airlines worldwide",
     url: "",
-    // Path-based URLs (/flights/JFK-BKK/tickets-...) return 404 — use query-string format instead.
-    showFor: () => true,
+    // Only show when the route involves Asia — Trip.com has thin inventory elsewhere
+    showFor: ({ from, to }) => isAsianRoute(from, to),
     buildUrl: ({ from, to, date, returnDate, adults }) => {
       const tripType = returnDate ? "D" : "S";
+      const tcFrom = toTripComCode(from);
+      const tcTo = toTripComCode(to);
       const params = new URLSearchParams({
         flighttype: tripType,
-        dcity: toTripComCode(from),
-        acity: toTripComCode(to),
+        dcity: tcFrom,
+        acity: tcTo,
         ddate: date,
         adult: String(adults),
         Allianceid: "8495775",
         SID: "316966000",
+        trip_sub1: "",
         trip_sub3: "D17566096",
         ...(returnDate ? { rdate: returnDate } : {}),
       });
-      return `https://www.trip.com/flights/?${params}`;
+      return `https://www.trip.com/flights/${tcFrom}-${tcTo}/tickets-${tcFrom}-${tcTo}?${params}`;
     },
   },
   {

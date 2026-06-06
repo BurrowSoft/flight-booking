@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { buildFlightAffiliateLinks } from "@burrowsoft/shared";
+import { buildFlightAffiliateLinks, SpinnerIcon, ExternalLinkIcon } from "@burrowsoft/shared";
 
 interface Props {
   from: string;
@@ -72,12 +72,7 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
       {/* Action bar: Kiwi spinner + affiliate buttons */}
       <div className="flex flex-wrap items-center gap-2 mb-6">
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-sky-600 text-white text-sm font-medium">
-          {!kiwiLoaded && (
-            <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-            </svg>
-          )}
+          {!kiwiLoaded && <SpinnerIcon className="h-3.5 w-3.5" />}
           Kiwi Results
         </div>
 
@@ -90,9 +85,7 @@ export function FlightResultsView({ from, to, date, returnDate, adults, locale, 
             className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 transition-colors"
           >
             {link.name} Results
-            <svg className="w-3.5 h-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
+            <ExternalLinkIcon className="w-3.5 h-3.5 opacity-60" />
           </a>
         ))}
       </div>

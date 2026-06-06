@@ -15,3 +15,4 @@ export * from "./components";
 
 // Affiliate link builders
 export * from "./affiliates/flights";
+export * from "./affiliates/hotels";

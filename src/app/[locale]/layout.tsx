@@ -51,7 +51,7 @@ export async function generateMetadata({
   const hdrs = await headers();
   const country = detectCountry(Object.fromEntries(hdrs.entries()));
   const countryName = getCountryName(country);
-  const desc = `Looking for cheap flights from ${countryName}? FlyMole searches hundreds of airlines instantly. No sign-up. No hidden fees. Best prices, always.`;
+  const desc = `Clean Search. NO ADS. No sign-up. Looking for cheap flights from ${countryName}? FlyMole searches hundreds of airlines instantly. No hidden fees. Best prices, always.`;
   return {
     metadataBase: new URL(SITE_URL),
     title: {

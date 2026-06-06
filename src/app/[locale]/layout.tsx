@@ -16,7 +16,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, websiteJsonLd } from "@/lib/seo";
 import { getCurrencyForCountry } from "@/lib/currency";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
-import { detectCountry, AppHeader, AppFooter } from "@burrowsoft/shared";
+import { detectCountry, getCountryName, AppHeader, AppFooter } from "@burrowsoft/shared";
 import { Link } from "@/i18n/navigation";
 import { LocaleSelector } from "@/components/LocaleSelector";
 import { routing } from "@/i18n/routing";
@@ -42,47 +42,52 @@ const LOCALE_FONT: Record<string, string> = {
 
 const BASE = "https://www.flymole.com";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: `${SITE_NAME} — Cheap Flights, Compare & Book`,
-    template: `%s | ${SITE_NAME}`,
-  },
-  description: SITE_DESCRIPTION,
-  keywords: ["cheap flights","book flights","compare flights","flight deals","airline tickets","cheap airline tickets","discount flights","last minute flights"],
-  authors: [{ name: SITE_NAME }],
-  creator: SITE_NAME,
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: SITE_URL,
-    siteName: SITE_NAME,
-    title: `${SITE_NAME} — Cheap Flights, Compare & Book`,
-    description: SITE_DESCRIPTION,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "FlyMole" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE_NAME} — Cheap Flights, Compare & Book`,
-    description: SITE_DESCRIPTION,
-    images: ["/og-image.png"],
-  },
-  alternates: {
-    canonical: `${BASE}/`,
-    languages: Object.fromEntries(
-      routing.locales.map(locale => [
-        locale,
-        locale === "en" ? `${BASE}/` : `${BASE}/${locale}/`,
-      ])
-    ),
-  },
-  other: { "google-adsense-account": "ca-pub-1009857008755875" },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const hdrs = await headers();
+  const country = detectCountry(Object.fromEntries(hdrs.entries()));
+  const countryName = getCountryName(country);
+  const desc = `Looking for cheap flights from ${countryName}? FlyMole searches hundreds of airlines instantly. No sign-up. No hidden fees. Best prices, always.`;
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: `Flight Search in ${countryName} — FlyMole`,
+      template: `%s | FlyMole`,
+    },
+    description: desc,
+    keywords: ["cheap flights","book flights","compare flights","flight deals","airline tickets","cheap airline tickets","discount flights","last minute flights"],
+    authors: [{ name: SITE_NAME }],
+    creator: SITE_NAME,
+    openGraph: {
+      type: "website",
+      locale: locale.replace("-", "_"),
+      url: locale === "en" ? `${BASE}/` : `${BASE}/${locale}/`,
+      siteName: SITE_NAME,
+      title: `Flight Search in ${countryName} — FlyMole`,
+      description: desc,
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "FlyMole" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Flight Search in ${countryName} — FlyMole`,
+      description: desc,
+      images: ["/og-image.png"],
+    },
+    alternates: {
+      canonical: locale === "en" ? `${BASE}/` : `${BASE}/${locale}/`,
+      languages: Object.fromEntries([
+        ...routing.locales.map(l => [l, l === "en" ? `${BASE}/` : `${BASE}/${l}/`]),
+        ["x-default", `${BASE}/`],
+      ]),
+    },
+    other: { "google-adsense-account": "ca-pub-1009857008755875" },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 } },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

@@ -64,6 +64,20 @@ export function middleware(req: NextRequest) {
     }
   }
 
+  // ?country=US — inject x-burrowsoft-geo so detectCountry() returns the simulated country
+  const devCountry = searchParams.get("country");
+  if (devCountry) {
+    const intlRes = intlMiddleware(req);
+    if (intlRes.status >= 300 && intlRes.status < 400) return intlRes;
+    const newHeaders = new Headers(req.headers);
+    newHeaders.set("x-burrowsoft-geo", devCountry.toUpperCase());
+    const res = NextResponse.next({ request: { headers: newHeaders } });
+    intlRes.headers.forEach((value, key) => {
+      if (key === "set-cookie") res.headers.append(key, value);
+    });
+    return res;
+  }
+
   return intlMiddleware(req);
 }
 
